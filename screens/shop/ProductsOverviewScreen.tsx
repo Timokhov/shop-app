@@ -4,6 +4,7 @@ import { NavigationStackOptions } from 'react-navigation-stack';
 import { Product } from '../../models/product';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import ProductItem from '../../components/shop/ProductItem/ProductItem';
 
 const ProductsOverviewScreen = () => {
 
@@ -11,8 +12,19 @@ const ProductsOverviewScreen = () => {
         (state: RootState) => state.productsState.availableProducts
     );
 
+    const viewDetails = (product: Product) => {
+        console.log(JSON.stringify(product));
+    }
+
+    const addToCart = (product: Product) => {
+        console.log(JSON.stringify(product));
+    }
+
     const renderProductItem = (itemInfo: ListRenderItemInfo<Product>): React.ReactElement => {
-        return <Text>{ itemInfo.item.title }</Text>;
+        return <ProductItem product={ itemInfo.item }
+                            onViewDetails={ viewDetails }
+                            onAddToCart={ addToCart }
+        />
     };
 
     return (
