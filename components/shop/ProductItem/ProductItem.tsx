@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Button } from 'react-native';
+import { View, StyleSheet, Image, Text, Button, TouchableNativeFeedback } from 'react-native';
 import { Product } from '../../../models/product';
 import { COLORS } from '../../../constants/colors';
 
@@ -12,21 +12,25 @@ interface ProductItemProps {
 const ProductItem = (props: ProductItemProps) => {
     return (
         <View style={ styles.productItem }>
-            <Image style={ styles.image } source={{ uri: props.product.imageUrl }}/>
-            <View style={ styles.details }>
-                <Text style={ styles.title }>{ props.product.title }</Text>
-                <Text style={ styles.price }>${ props.product.price.toFixed(2) }</Text>
-            </View>
-            <View style={ styles.actionsContainer }>
-                <Button title="View Details"
-                        color={ COLORS.primary }
-                        onPress={ () => props.onViewDetails(props.product) }
-                />
-                <Button title="Add to Cart"
-                        color={ COLORS.primary }
-                        onPress={ () => props.onAddToCart(props.product) }
-                />
-            </View>
+            <TouchableNativeFeedback onPress={ () => props.onViewDetails(props.product) } useForeground>
+                <View>
+                    <Image style={ styles.image } source={{ uri: props.product.imageUrl }}/>
+                    <View style={ styles.details }>
+                        <Text style={ styles.title }>{ props.product.title }</Text>
+                        <Text style={ styles.price }>${ props.product.price.toFixed(2) }</Text>
+                    </View>
+                    <View style={ styles.actionsContainer }>
+                        <Button title="View Details"
+                                color={ COLORS.primary }
+                                onPress={ () => props.onViewDetails(props.product) }
+                        />
+                        <Button title="Add to Cart"
+                                color={ COLORS.primary }
+                                onPress={ () => props.onAddToCart(props.product) }
+                        />
+                    </View>
+                </View>
+            </TouchableNativeFeedback>
         </View>
     );
 };
