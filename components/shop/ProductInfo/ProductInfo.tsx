@@ -9,7 +9,7 @@ interface ProductItemProps {
     onAddToCart: (product: Product) => void
 }
 
-const ProductItem = (props: ProductItemProps) => {
+const ProductInfo = (props: ProductItemProps) => {
     return (
         <View style={ styles.productItem }>
             <TouchableNativeFeedback onPress={ () => props.onViewDetails(props.product) } useForeground>
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ProductItem;
+export default ProductInfo;

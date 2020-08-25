@@ -18,7 +18,7 @@ const onAddToCart = (state: CartState, action: AddToCartAction): CartState => {
 
     if (state.itemsMap[product.id]) {
         cartItem = new CartItem(
-            state.itemsMap[product.id].quantity,
+            state.itemsMap[product.id].quantity + 1,
             state.itemsMap[product.id].price,
             product.title,
             state.itemsMap[product.id].sum + product.price,

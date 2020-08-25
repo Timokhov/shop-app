@@ -7,14 +7,13 @@ export enum CartActionType {
 
 export interface CartAction extends Action<CartActionType> {}
 
-export class AddToCartAction implements CartAction {
-    type: CartActionType = CartActionType.ADD_TO_CART;
-
-    constructor(
-        public product: Product
-    ) {}
+export interface AddToCartAction extends CartAction {
+    product: Product
 }
 
 export const addToCart = (product: Product): AddToCartAction => {
-    return new AddToCartAction(product);
+    return {
+        type: CartActionType.ADD_TO_CART,
+        product: product
+    };
 };
