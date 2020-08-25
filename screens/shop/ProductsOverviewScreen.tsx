@@ -1,24 +1,25 @@
 import React from 'react';
-import { FlatList, ListRenderItemInfo, StyleSheet, Text } from 'react-native';
+import { FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
 import { NavigationStackOptions } from 'react-navigation-stack';
+import { NavigationStackScreenProps } from 'react-navigation-stack/lib/typescript/src/types';
 import { Product } from '../../models/product';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import ProductItem from '../../components/shop/ProductItem/ProductItem';
 
-const ProductsOverviewScreen = () => {
+const ProductsOverviewScreen = (props: NavigationStackScreenProps) => {
 
     const productList: Product[] = useSelector(
         (state: RootState) => state.productsState.availableProducts
     );
 
     const viewDetails = (product: Product) => {
-        console.log(JSON.stringify(product));
-    }
+        props.navigation.navigate('ProductDetails', { product: product });
+    };
 
     const addToCart = (product: Product) => {
         console.log(JSON.stringify(product));
-    }
+    };
 
     const renderProductItem = (itemInfo: ListRenderItemInfo<Product>): React.ReactElement => {
         return <ProductItem product={ itemInfo.item }
@@ -40,6 +41,6 @@ const styles = StyleSheet.create({
 
 ProductsOverviewScreen.navigationOptions = {
     headerTitle: 'All Products'
-} as NavigationStackOptions
+} as NavigationStackOptions;
 
 export default ProductsOverviewScreen;
