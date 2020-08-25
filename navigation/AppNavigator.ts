@@ -15,9 +15,10 @@ const ProductsNavigator = createStackNavigator(
                 backgroundColor: COLORS.primary
             },
             headerTitleStyle: {
-                fontFamily: 'open-sans'
+                fontFamily: 'open-sans-bold'
             },
-            headerTintColor: 'white'
+            headerTintColor: 'white',
+            headerTitleAlign: 'center'
         }
     }
 );
