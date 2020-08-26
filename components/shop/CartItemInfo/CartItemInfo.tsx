@@ -5,10 +5,22 @@ import { ExpandedCartItem } from '../../../models/cart-item';
 
 interface CartItemInfoProps {
     item: ExpandedCartItem,
-    onRemove: (item: ExpandedCartItem) => void
+    onRemove?: (item: ExpandedCartItem) => void
 }
 
 const CartItemInfo = (props: CartItemInfoProps) => {
+
+    let removeButton: React.ReactElement | undefined;
+    if (props.onRemove) {
+        removeButton = (
+            <TouchableNativeFeedback onPress={ () => props.onRemove && props.onRemove(props.item) }>
+                <View style={ styles.deleteIconContainer }>
+                    <Ionicons name="ios-trash" size={ 23 } color="red"/>
+                </View>
+            </TouchableNativeFeedback>
+        );
+    }
+
     return (
         <View style={ styles.cartItemInfo }>
             <View style={ styles.itemData }>
@@ -17,11 +29,7 @@ const CartItemInfo = (props: CartItemInfoProps) => {
             </View>
             <View style={ styles.itemData }>
                 <Text style={ styles.amount }>${ props.item.sum.toFixed(2) }</Text>
-                <TouchableNativeFeedback onPress={ () => props.onRemove(props.item) }>
-                    <View style={ styles.deleteIconContainer }>
-                        <Ionicons name="ios-trash" size={ 23 } color="red"/>
-                    </View>
-                </TouchableNativeFeedback>
+                { removeButton }
             </View>
         </View>
     );

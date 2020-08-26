@@ -11,7 +11,7 @@ interface ProductItemProps {
 
 const ProductInfo = (props: ProductItemProps) => {
     return (
-        <View style={ styles.productItem }>
+        <View style={ styles.productInfo }>
             <TouchableNativeFeedback onPress={ () => props.onViewDetails(props.product) } useForeground>
                 <View>
                     <Image style={ styles.image } source={{ uri: props.product.imageUrl }}/>
@@ -36,7 +36,7 @@ const ProductInfo = (props: ProductItemProps) => {
 };
 
 const styles = StyleSheet.create({
-    productItem: {
+    productInfo: {
         elevation: 5,
         borderRadius: 10,
         overflow: 'hidden',

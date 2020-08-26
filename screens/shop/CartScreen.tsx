@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Button, FlatList, Text, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CartItemInfo from '../../components/shop/CartItemInfo/CartItemInfo';
@@ -7,6 +8,7 @@ import { COLORS } from '../../constants/colors';
 import { ExpandedCartItem } from '../../models/cart-item';
 import { RootState } from '../../store/store';
 import * as CartActions from '../../store/actions/cart.actions';
+import * as OrdersActions from '../../store/actions/orders.actions';
 
 const CartScreen = () => {
 
@@ -26,6 +28,11 @@ const CartScreen = () => {
         dispatch(CartActions.removeFromCart(item.productId));
     };
 
+    const onOrderNow = () => {
+        dispatch(OrdersActions.addOrder(itemsList, totalAmount));
+        dispatch(CartActions.clearCart());
+    };
+
     const renderCartItem = (itemInfo: ListRenderItemInfo<ExpandedCartItem>): React.ReactElement => {
         return <CartItemInfo item={ itemInfo.item } onRemove={ onCartItemRemove }/>
     };
@@ -39,7 +46,7 @@ const CartScreen = () => {
                 <Button color={ COLORS.primary }
                         title="Order Now"
                         disabled={ itemsList.length === 0 }
-                        onPress={ () => {} }
+                        onPress={ onOrderNow }
                 />
             </View>
            <FlatList data={ itemsList } renderItem={ renderCartItem } keyExtractor={ item => item.productId }/>
@@ -69,5 +76,9 @@ const styles = StyleSheet.create({
         color: '#888'
     }
 });
+
+CartScreen.navigationOptions = {
+    headerTitle: 'Your Cart'
+} as NavigationStackOptions;
 
 export default CartScreen;

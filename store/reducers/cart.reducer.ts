@@ -59,12 +59,18 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
     }
 };
 
+const onClearCart = (): CartState => {
+    return initialState;
+};
+
 const cartReducer = (state: CartState = initialState, action: CartAction): CartState => {
     switch (action.type) {
         case CartActionType.ADD_TO_CART:
             return onAddToCart(state, action as AddToCartAction);
         case CartActionType.REMOVE_FROM_CART:
             return onRemoveFromCart(state, action as RemoveFromCartAction);
+        case CartActionType.CLEAR_CART:
+            return onClearCart();
         default:
             return state;
     }
