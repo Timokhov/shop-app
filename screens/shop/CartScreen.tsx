@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Button, FlatList, Text, StyleSheet, ListRenderItemInfo } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Action, Dispatch } from 'redux';
 import CartItemInfo from '../../components/shop/CartItemInfo/CartItemInfo';
 import { COLORS } from '../../constants/colors';
 import { ExpandedCartItem } from '../../models/cart-item';
 import { RootState } from '../../store/store';
+import * as CartActions from '../../store/actions/cart.actions';
 
 const CartScreen = () => {
 
@@ -18,9 +20,10 @@ const CartScreen = () => {
             });
         }
     );
+    const dispatch: Dispatch<Action> = useDispatch();
 
     const onCartItemRemove = (item: ExpandedCartItem) => {
-        console.log(`Remove ${JSON.stringify(item)}`);
+        dispatch(CartActions.removeFromCart(item.productId));
     };
 
     const renderCartItem = (itemInfo: ListRenderItemInfo<ExpandedCartItem>): React.ReactElement => {

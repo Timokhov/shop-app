@@ -16,9 +16,11 @@ const CartItemInfo = (props: CartItemInfoProps) => {
                 <Text style={ styles.title }>{ props.item.title }</Text>
             </View>
             <View style={ styles.itemData }>
-                <Text style={ styles.amount }>${ props.item.sum }</Text>
+                <Text style={ styles.amount }>${ props.item.sum.toFixed(2) }</Text>
                 <TouchableNativeFeedback onPress={ () => props.onRemove(props.item) }>
-                    <Ionicons name="ios-trash" size={ 23 } color="red"/>
+                    <View style={ styles.deleteIconContainer }>
+                        <Ionicons name="ios-trash" size={ 23 } color="red"/>
+                    </View>
                 </TouchableNativeFeedback>
             </View>
         </View>
@@ -53,6 +55,11 @@ const styles = StyleSheet.create({
         fontFamily: 'open-sans-bold',
         marginHorizontal: 10,
         color: '#888'
+    },
+    deleteIconContainer: {
+        width: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

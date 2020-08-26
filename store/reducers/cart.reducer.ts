@@ -1,6 +1,6 @@
 import { CartItem } from '../../models/cart-item';
 import { Product } from '../../models/product';
-import { AddToCartAction, CartAction, CartActionType } from '../actions/cart.actions';
+import { AddToCartAction, CartAction, CartActionType, RemoveFromCartAction } from '../actions/cart.actions';
 
 export interface CartState {
     itemsMap: {[index: string]: CartItem},
@@ -39,10 +39,32 @@ const onAddToCart = (state: CartState, action: AddToCartAction): CartState => {
     };
 };
 
+const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartState => {
+    const cartItemToDelete: CartItem = state.itemsMap[action.productId];
+    const updatedItemsMap: {[index: string]: CartItem} = { ...state.itemsMap };
+    if (cartItemToDelete.quantity > 1) {
+        updatedItemsMap[action.productId] = new CartItem(
+            cartItemToDelete.quantity - 1,
+            cartItemToDelete.price,
+            cartItemToDelete.title,
+            cartItemToDelete.sum - cartItemToDelete.price
+        );
+    } else {
+        delete updatedItemsMap[action.productId];
+    }
+    return {
+        ...state,
+        itemsMap: updatedItemsMap,
+        totalAmount: state.totalAmount - cartItemToDelete.price
+    }
+};
+
 const cartReducer = (state: CartState = initialState, action: CartAction): CartState => {
     switch (action.type) {
         case CartActionType.ADD_TO_CART:
             return onAddToCart(state, action as AddToCartAction);
+        case CartActionType.REMOVE_FROM_CART:
+            return onRemoveFromCart(state, action as RemoveFromCartAction);
         default:
             return state;
     }
