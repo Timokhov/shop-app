@@ -25,7 +25,13 @@ const CartItemInfo = (props: CartItemInfoProps) => {
         <View style={ styles.cartItemInfo }>
             <View style={ styles.itemData }>
                 <Text style={ styles.quantity }>{ props.item.quantity }</Text>
-                <Text style={ styles.title }>{ props.item.title }</Text>
+                <Text style={ styles.title }>
+                    {
+                        props.item.title.length > 22
+                            ? props.item.title.substring(0, 19) + '...'
+                            : props.item.title
+                    }
+                </Text>
             </View>
             <View style={ styles.itemData }>
                 <Text style={ styles.amount }>${ props.item.sum.toFixed(2) }</Text>
@@ -37,11 +43,9 @@ const CartItemInfo = (props: CartItemInfoProps) => {
 
 const styles = StyleSheet.create({
     cartItemInfo: {
-        padding: 10,
-        backgroundColor: 'white',
+        marginVertical: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20
+        justifyContent: 'space-between'
     },
     itemData: {
         flexDirection: 'row',

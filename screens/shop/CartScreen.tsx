@@ -4,6 +4,7 @@ import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CartItemInfo from '../../components/shop/CartItemInfo/CartItemInfo';
+import Card from '../../components/UI/Card/Card';
 import { COLORS } from '../../constants/colors';
 import { ExpandedCartItem } from '../../models/cart-item';
 import { RootState } from '../../store/store';
@@ -38,7 +39,7 @@ const CartScreen = () => {
 
     return (
         <View style={ styles.screen }>
-            <View style={ styles.summary }>
+            <Card style={ styles.summary }>
                 <Text style={ styles.summaryText }>
                     Total: <Text style={ styles.amount }>${ Math.round(+totalAmount.toFixed(2) * 100) / 100 }</Text>
                 </Text>
@@ -47,7 +48,7 @@ const CartScreen = () => {
                         disabled={ itemsList.length === 0 }
                         onPress={ onOrderNow }
                 />
-            </View>
+            </Card>
            <FlatList data={ itemsList } renderItem={ renderCartItem } keyExtractor={ item => item.productId }/>
         </View>
     );
@@ -55,17 +56,15 @@ const CartScreen = () => {
 
 const styles = StyleSheet.create({
     screen: {
-        padding: 20
+        padding: 10,
+        margin: 20
     },
     summary: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
-        padding: 10,
-        borderRadius: 10,
-        elevation: 5,
-        backgroundColor: 'white',
+        padding: 10
     },
     summaryText: {
         fontSize: 18,

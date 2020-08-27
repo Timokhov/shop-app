@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FlatList, ListRenderItemInfo } from 'react-native';
+import { Button, FlatList, ListRenderItemInfo, Alert } from 'react-native';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
@@ -24,7 +24,14 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
     };
 
     const onDelete = (product: Product) => {
-        dispatch(ProductsActions.deleteProduct(product.id));
+        Alert.alert(
+            'Are you sure?',
+            'Do you really want to delete this item?',
+            [
+                { text: 'No', style: 'default' },
+                { text: 'Yes', style: 'destructive', onPress: () => dispatch(ProductsActions.deleteProduct(product.id)) }
+            ]
+        );
     };
 
     const renderProduct = (itemInfo: ListRenderItemInfo<Product>): React.ReactElement => {

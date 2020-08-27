@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { COLORS } from '../../../constants/colors';
 import { Order } from '../../../models/order';
+import Card from '../../UI/Card/Card';
 import CartItemInfo from '../CartItemInfo/CartItemInfo';
 
 interface OrderInfoProps {
@@ -19,7 +20,7 @@ const OrderInfo = (props: OrderInfoProps) => {
     let details: React.ReactElement | undefined;
     if (showDetails) {
         details = (
-            <View>
+            <View style={ styles.detailsContainer }>
                 {
                     props.order.items.map(cartItem => {
                         return <CartItemInfo key={ cartItem.productId } item={ cartItem }/>
@@ -31,9 +32,9 @@ const OrderInfo = (props: OrderInfoProps) => {
 
 
     return (
-        <View style={ styles.orderInfo }>
+        <Card style={ styles.orderInfo }>
             <View style={ styles.summary }>
-                <Text style={ styles.totalAmount }>${ props.order.totalAmount }</Text>
+                <Text style={ styles.totalAmount }>${ props.order.totalAmount.toFixed(2) }</Text>
                 <Text style={ styles.date }>{ props.order.dateString }</Text>
             </View>
             <Button title={ showDetails ? 'Hide Details' : 'Show Details' }
@@ -41,16 +42,12 @@ const OrderInfo = (props: OrderInfoProps) => {
                     onPress={ onToggleDetails }
             />
             { details }
-        </View>
+        </Card>
     );
 };
 
 const styles = StyleSheet.create({
     orderInfo: {
-        elevation: 5,
-        borderRadius: 10,
-        overflow: 'hidden',
-        backgroundColor: 'white',
         margin: 20,
         padding: 10,
         alignItems: 'center'
@@ -70,6 +67,10 @@ const styles = StyleSheet.create({
     date: {
         fontSize: 16,
         fontFamily: 'open-sans',
+    },
+    detailsContainer: {
+        width: '100%',
+        padding: 10
     }
 });
 

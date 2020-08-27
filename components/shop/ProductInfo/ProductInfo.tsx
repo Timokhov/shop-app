@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, TouchableNativeFeedback } from 'react-native';
 import { Product } from '../../../models/product';
+import Card from '../../UI/Card/Card';
 
 interface ProductItemProps {
     product: Product,
@@ -10,7 +11,7 @@ interface ProductItemProps {
 
 const ProductInfo = (props: ProductItemProps) => {
     return (
-        <View style={ styles.productInfo }>
+        <Card style={ styles.productInfo }>
             <TouchableNativeFeedback onPress={ () => props.onSelect(props.product) } useForeground>
                 <View>
                     <Image style={ styles.image } source={{ uri: props.product.imageUrl }}/>
@@ -23,16 +24,12 @@ const ProductInfo = (props: ProductItemProps) => {
                     </View>
                 </View>
             </TouchableNativeFeedback>
-        </View>
+        </Card>
     );
 };
 
 const styles = StyleSheet.create({
     productInfo: {
-        elevation: 5,
-        borderRadius: 10,
-        overflow: 'hidden',
-        backgroundColor: 'white',
         height: 300,
         margin: 20
     },
