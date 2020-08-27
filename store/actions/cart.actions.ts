@@ -3,8 +3,7 @@ import { Product } from '../../models/product';
 
 export enum CartActionType {
     ADD_TO_CART = 'ADD_TO_CART',
-    REMOVE_FROM_CART = 'REMOVE_FROM_CART',
-    CLEAR_CART = 'CLEAR_CART'
+    REMOVE_FROM_CART = 'REMOVE_FROM_CART'
 }
 
 export interface CartAction extends Action<CartActionType> {}
@@ -28,11 +27,5 @@ export const removeFromCart = (productId: string): RemoveFromCartAction => {
     return {
         type: CartActionType.REMOVE_FROM_CART,
         productId: productId
-    };
-};
-
-export const clearCart = (): CartAction => {
-    return {
-        type: CartActionType.CLEAR_CART
     };
 };

@@ -1,9 +1,10 @@
 import React from 'react';
-import { FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
+import { Button, FlatList, ListRenderItemInfo } from 'react-native';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import { COLORS } from '../../constants/colors';
 import { Product } from '../../models/product';
 import { Dispatch, Action } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,41 +29,42 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 
     const renderProduct = (itemInfo: ListRenderItemInfo<Product>): React.ReactElement => {
         return <ProductInfo product={ itemInfo.item }
-                            onViewDetails={ onViewDetails }
-                            onAddToCart={ onAddToCart }
-        />
+                            onSelect={ onViewDetails }>
+            <Button title="View Details"
+                    color={ COLORS.primary }
+                    onPress={ () => onViewDetails(itemInfo.item) }
+            />
+            <Button title="Add to Cart"
+                    color={ COLORS.primary }
+                    onPress={ () => onAddToCart(itemInfo.item) }
+            />
+        </ProductInfo>
     };
 
     return (
-       <FlatList data={ productList }
-                 renderItem={ renderProduct }
-       />
+       <FlatList data={ productList } renderItem={ renderProduct }/>
     );
 };
-
-const styles = StyleSheet.create({
-
-});
 
 ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
     return {
         headerTitle: 'All Products',
-        headerRight: () => {
-            return (
-                <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
-                    <Item title='Cart'
-                          iconName='ios-cart'
-                          onPress={ () => props.navigation.navigate('Cart') }
-                    />
-                </HeaderButtons>
-            );
-        },
         headerLeft: () => {
             return (
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
                           onPress={ () => props.navigation.toggleDrawer() }
+                    />
+                </HeaderButtons>
+            );
+        },
+        headerRight: () => {
+            return (
+                <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
+                    <Item title='Cart'
+                          iconName='ios-cart'
+                          onPress={ () => props.navigation.navigate('Cart') }
                     />
                 </HeaderButtons>
             );

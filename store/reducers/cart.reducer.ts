@@ -1,6 +1,13 @@
 import { CartItem } from '../../models/cart-item';
 import { Product } from '../../models/product';
-import { AddToCartAction, CartAction, CartActionType, RemoveFromCartAction } from '../actions/cart.actions';
+import {
+    AddToCartAction,
+    CartAction,
+    CartActionType,
+    RemoveFromCartAction
+} from '../actions/cart.actions';
+import { OrdersAction, OrdersActionType } from '../actions/orders.actions';
+import { DeleteProductAction, ProductsActions, ProductsActionType } from '../actions/products.actions';
 
 export interface CartState {
     itemsMap: {[index: string]: CartItem},
@@ -59,18 +66,35 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
     }
 };
 
-const onClearCart = (): CartState => {
+const onAddOrder = (): CartState => {
     return initialState;
 };
 
-const cartReducer = (state: CartState = initialState, action: CartAction): CartState => {
+const onDeleteProduct = (state: CartState, action: DeleteProductAction): CartState => {
+    if (state.itemsMap[action.productId]) {
+        const itemTotal: number = state.itemsMap[action.productId].sum;
+        const updatedItemsMap: {[index: string]: CartItem} = { ...state.itemsMap };
+        delete updatedItemsMap[action.productId];
+        return {
+            ...state,
+            itemsMap: updatedItemsMap,
+            totalAmount: state.totalAmount - itemTotal
+        };
+    } else {
+        return state;
+    }
+};
+
+const cartReducer = (state: CartState = initialState, action: CartAction | OrdersAction | ProductsActions): CartState => {
     switch (action.type) {
         case CartActionType.ADD_TO_CART:
             return onAddToCart(state, action as AddToCartAction);
         case CartActionType.REMOVE_FROM_CART:
             return onRemoveFromCart(state, action as RemoveFromCartAction);
-        case CartActionType.CLEAR_CART:
-            return onClearCart();
+        case OrdersActionType.ADD_ORDER:
+            return onAddOrder();
+        case ProductsActionType.DELETE_PRODUCT:
+            return onDeleteProduct(state, action as DeleteProductAction);
         default:
             return state;
     }

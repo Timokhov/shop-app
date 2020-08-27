@@ -30,7 +30,6 @@ const CartScreen = () => {
 
     const onOrderNow = () => {
         dispatch(OrdersActions.addOrder(itemsList, totalAmount));
-        dispatch(CartActions.clearCart());
     };
 
     const renderCartItem = (itemInfo: ListRenderItemInfo<ExpandedCartItem>): React.ReactElement => {
@@ -41,7 +40,7 @@ const CartScreen = () => {
         <View style={ styles.screen }>
             <View style={ styles.summary }>
                 <Text style={ styles.summaryText }>
-                    Total: <Text style={ styles.amount }>${ totalAmount.toFixed(2) }</Text>
+                    Total: <Text style={ styles.amount }>${ Math.round(+totalAmount.toFixed(2) * 100) / 100 }</Text>
                 </Text>
                 <Button color={ COLORS.primary }
                         title="Order Now"

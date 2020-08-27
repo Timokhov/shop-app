@@ -1,18 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Button, TouchableNativeFeedback } from 'react-native';
+import { View, StyleSheet, Image, Text, TouchableNativeFeedback } from 'react-native';
 import { Product } from '../../../models/product';
-import { COLORS } from '../../../constants/colors';
 
 interface ProductItemProps {
     product: Product,
-    onViewDetails: (product: Product) => void,
-    onAddToCart: (product: Product) => void
+    onSelect: (product: Product) => void,
+    children: React.ReactNode,
 }
 
 const ProductInfo = (props: ProductItemProps) => {
     return (
         <View style={ styles.productInfo }>
-            <TouchableNativeFeedback onPress={ () => props.onViewDetails(props.product) } useForeground>
+            <TouchableNativeFeedback onPress={ () => props.onSelect(props.product) } useForeground>
                 <View>
                     <Image style={ styles.image } source={{ uri: props.product.imageUrl }}/>
                     <View style={ styles.details }>
@@ -20,14 +19,7 @@ const ProductInfo = (props: ProductItemProps) => {
                         <Text style={ styles.price }>${ props.product.price.toFixed(2) }</Text>
                     </View>
                     <View style={ styles.actionsContainer }>
-                        <Button title="View Details"
-                                color={ COLORS.primary }
-                                onPress={ () => props.onViewDetails(props.product) }
-                        />
-                        <Button title="Add to Cart"
-                                color={ COLORS.primary }
-                                onPress={ () => props.onAddToCart(props.product) }
-                        />
+                        { props.children }
                     </View>
                 </View>
             </TouchableNativeFeedback>

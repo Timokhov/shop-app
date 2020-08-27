@@ -9,6 +9,8 @@ import OrdersScreen from '../screens/shop/OrdersScreen';
 import ProductDetailsScreen from '../screens/shop/ProductDetailsScreen';
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import { COLORS } from '../constants/colors';
+import EditProductScreen from '../screens/user/EditProductScreen';
+import UserProductsScreen from '../screens/user/UserProductsScreen';
 
 const defaultNavOptions: NavigationStackOptions = {
     headerStyle: {
@@ -51,10 +53,26 @@ const OrdersNavigator = createStackNavigator(
     }
 );
 
+const AdminNavigator = createStackNavigator(
+    {
+        UserProducts: UserProductsScreen,
+        EditProduct: EditProductScreen
+    },
+    {
+        navigationOptions: {
+            drawerIcon: (props: DrawerIconProps) => {
+                return <Ionicons name="ios-create" size={ 23 } color={ props.tintColor }/>
+            }
+        },
+        defaultNavigationOptions: defaultNavOptions
+    }
+);
+
 const ShopNavigator = createDrawerNavigator(
     {
         Products: ProductsNavigator,
-        Orders: OrdersNavigator
+        Orders: OrdersNavigator,
+        Admin: AdminNavigator
     },
     {
         contentOptions: {
