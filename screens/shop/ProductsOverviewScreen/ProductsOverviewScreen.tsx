@@ -3,14 +3,14 @@ import { Button, FlatList, ListRenderItemInfo } from 'react-native';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
-import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
-import { COLORS } from '../../constants/colors';
-import { Product } from '../../models/product';
+import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import { COLORS } from '../../../constants/colors';
+import { Product } from '../../../models/product';
 import { Dispatch, Action } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
-import * as CartActions from '../../store/actions/cart.actions';
-import { RootState } from '../../store/store';
-import ProductInfo from '../../components/shop/ProductInfo/ProductInfo';
+import * as CartActions from '../../../store/actions/cart.actions';
+import { RootState } from '../../../store/store';
+import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 

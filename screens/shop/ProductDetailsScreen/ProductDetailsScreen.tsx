@@ -3,9 +3,9 @@ import { View, Text, Image, ScrollView, Button, StyleSheet } from 'react-native'
 import { NavigationStackScreenProps, NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch } from 'react-redux';
 import { Action, Dispatch } from 'redux';
-import { COLORS } from '../../constants/colors';
-import { Product } from '../../models/product';
-import * as CartActions from '../../store/actions/cart.actions';
+import { COLORS } from '../../../constants/colors';
+import { Product } from '../../../models/product';
+import * as CartActions from '../../../store/actions/cart.actions';
 
 interface ProductDetailsScreenProps extends NavigationStackScreenProps {
     product: Product

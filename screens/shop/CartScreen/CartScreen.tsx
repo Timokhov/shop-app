@@ -3,13 +3,13 @@ import { View, Button, FlatList, Text, StyleSheet, ListRenderItemInfo } from 're
 import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
-import CartItemInfo from '../../components/shop/CartItemInfo/CartItemInfo';
-import Card from '../../components/UI/Card/Card';
-import { COLORS } from '../../constants/colors';
-import { ExpandedCartItem } from '../../models/cart-item';
-import { RootState } from '../../store/store';
-import * as CartActions from '../../store/actions/cart.actions';
-import * as OrdersActions from '../../store/actions/orders.actions';
+import CartItemInfo from '../../../components/shop/CartItemInfo/CartItemInfo';
+import Card from '../../../components/UI/Card/Card';
+import { COLORS } from '../../../constants/colors';
+import { ExpandedCartItem } from '../../../models/cart-item';
+import { RootState } from '../../../store/store';
+import * as CartActions from '../../../store/actions/cart.actions';
+import * as OrdersActions from '../../../store/actions/orders.actions';
 
 const CartScreen = () => {
 

@@ -5,12 +5,12 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
-import ProductInfo from '../../components/shop/ProductInfo/ProductInfo';
-import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
-import { COLORS } from '../../constants/colors';
-import { Product } from '../../models/product';
-import { RootState } from '../../store/store';
-import * as ProductsActions from '../../store/actions/products.actions';
+import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
+import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import { COLORS } from '../../../constants/colors';
+import { Product } from '../../../models/product';
+import { RootState } from '../../../store/store';
+import * as ProductsActions from '../../../store/actions/products.actions';
 
 const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
 

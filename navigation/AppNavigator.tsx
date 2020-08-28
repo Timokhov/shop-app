@@ -4,13 +4,13 @@ import { createAppContainer } from 'react-navigation';
 import { DrawerIconProps } from 'react-navigation-drawer/src/types';
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-import CartScreen from '../screens/shop/CartScreen';
-import OrdersScreen from '../screens/shop/OrdersScreen';
-import ProductDetailsScreen from '../screens/shop/ProductDetailsScreen';
-import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
+import CartScreen from '../screens/shop/CartScreen/CartScreen';
+import OrdersScreen from '../screens/shop/OrdersScreen/OrdersScreen';
+import ProductDetailsScreen from '../screens/shop/ProductDetailsScreen/ProductDetailsScreen';
+import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen/ProductsOverviewScreen';
 import { COLORS } from '../constants/colors';
-import EditProductScreen from '../screens/user/EditProductScreen';
-import UserProductsScreen from '../screens/user/UserProductsScreen';
+import EditProductScreen from '../screens/user/EditProductScreen/EditProductScreen';
+import UserProductsScreen from '../screens/user/UserProductsScreen/UserProductsScreen';
 
 const defaultNavOptions: NavigationStackOptions = {
     headerStyle: {
