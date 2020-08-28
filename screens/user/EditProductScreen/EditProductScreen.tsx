@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,7 @@ import { Product } from '../../../models/product';
 import * as FromStoreService from '../../../services/form-store/form-store.service'
 
 import * as ProductsActions from '../../../store/actions/products.actions';
+import InputControl from '../../../components/UI/InputControl/InputControl';
 
 interface EditProductScreenProps extends NavigationStackScreenProps {
     product: Product
@@ -63,7 +64,7 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                 );
             } else {
                 dispatch(
-                    ProductsActions.updateProduct(
+                    ProductsActions.createProduct(
                         formState.controls['title'].value,
                         formState.controls['imageUrl'].value,
                         formState.controls['description'].value,
@@ -79,71 +80,72 @@ const EditProductScreen = (props: EditProductScreenProps) => {
         props.navigation.setParams({ submit: submitHandler });
     }, [submitHandler]);
 
-    const textChangedHandler = (inputId: string, text: string) => {
-        let isValid: boolean = false;
-        if (text && text.trim().length > 0) {
-            isValid = true
-        }
-        dispatchFormState(FromStoreService.formUpdate(inputId, text, isValid));
+    const onInputValueChange = (inputId: string, newValue: string, isValid: boolean) => {
+        dispatchFormState(FromStoreService.formUpdate(inputId, newValue, isValid));
     };
 
     return (
-        <ScrollView>
-            <View style={ styles.form }>
-                <View style={ styles.formControl }>
-                    <Text style={ styles.label }>Title</Text>
-                    <TextInput style={ styles.input }
-                               value={ formState.controls['title'].value }
-                               onChangeText={ text => textChangedHandler('title', text)  }
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={ 100 }>
+            <ScrollView>
+                <View style={ styles.form }>
+                    <InputControl label="Title"
+                                  keyboardType="default"
+                                  autoCapitalize="sentences"
+                                  autoCorrect
+                                  returnKeyType="next"
+                                  value={ formState.controls['title'].value }
+                                  isValid={ formState.controls['title'].isValid }
+                                  onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid)}
+                                  required
+                                  error="Please enter valid title."
                     />
-                    { !formState.controls['title'].isValid && <Text>Please enter a valid title!</Text> }
-                </View>
-                <View style={ styles.formControl }>
-                    <Text style={ styles.label }>Image Url</Text>
-                    <TextInput style={ styles.input }
-                               value={ formState.controls['imageUrl'].value }
-                               onChangeText={ text => textChangedHandler('imageUrl', text) }
+                    <InputControl label="Image Url"
+                                  keyboardType="default"
+                                  returnKeyType="next"
+                                  value={ formState.controls['imageUrl'].value }
+                                  isValid={ formState.controls['imageUrl'].isValid }
+                                  onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('imageUrl', newValue, isValid)}
+                                  required
+                                  error="Please enter valid image url."
                     />
-                </View>
-                {
-                    !product && (
-                        <View style={ styles.formControl }>
-                            <Text style={ styles.label }>Price</Text>
-                            <TextInput style={ styles.input }
-                                       value={ formState.controls['description'].value }
-                                       keyboardType='decimal-pad'
-                                       onChangeText={ text => textChangedHandler('description', text) }
+
+                    {
+                        !product && (
+                            <InputControl label="Price"
+                                          keyboardType="decimal-pad"
+                                          returnKeyType="next"
+                                          value={ formState.controls['price'].value }
+                                          isValid={ formState.controls['price'].isValid }
+                                          onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('price', newValue, isValid)}
+                                          required
+                                          minNumberValue={ 0.1 }
+                                          error="Please enter valid price."
                             />
-                        </View>
-                    )
-                }
-                <View style={ styles.formControl }>
-                    <Text style={ styles.label }>Description</Text>
-                    <TextInput style={ styles.input }
-                               value={ formState.controls['price'].value }
-                               onChangeText={ text => textChangedHandler('price', text) }
+                        )
+                    }
+                    <InputControl label="Description"
+                                  keyboardType="default"
+                                  autoCapitalize="sentences"
+                                  autoCorrect
+                                  multiline
+                                  numberOfLines={ 3 }
+                                  returnKeyType="next"
+                                  value={ formState.controls['description'].value }
+                                  isValid={ formState.controls['description'].isValid }
+                                  onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('description', newValue, isValid)}
+                                  required
+                                  minLength={ 5 }
+                                  error="Please enter valid image description."
                     />
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
     form: {
         padding: 20
-    },
-    formControl: {
-        width: '100%',
-        marginBottom: 30
-    },
-    label: {
-        fontFamily: 'open-sans-bold'
-    },
-    input: {
-        padding: 5,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1
     }
 });
 
