@@ -5,9 +5,9 @@ import {
     CartAction,
     CartActionType,
     RemoveFromCartAction
-} from '../actions/cart.actions';
-import { OrdersAction, OrdersActionType } from '../actions/orders.actions';
-import { DeleteProductAction, ProductsActions, ProductsActionType } from '../actions/products.actions';
+} from './cart.actions';
+import { OrdersAction, OrdersActionType } from '../orders/orders.actions';
+import { DeleteProductAction, ProductsAction, ProductsActionType } from '../products/products.actions';
 
 export interface CartState {
     itemsMap: {[index: string]: CartItem},
@@ -85,7 +85,7 @@ const onDeleteProduct = (state: CartState, action: DeleteProductAction): CartSta
     }
 };
 
-const cartReducer = (state: CartState = initialState, action: CartAction | OrdersAction | ProductsActions): CartState => {
+const cartReducer = (state: CartState = initialState, action: CartAction | OrdersAction | ProductsAction): CartState => {
     switch (action.type) {
         case CartActionType.ADD_TO_CART:
             return onAddToCart(state, action as AddToCartAction);

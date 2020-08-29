@@ -1,12 +1,12 @@
 import { PRODUCTS } from '../../data/dummy-data';
 import { Product } from '../../models/product';
 import {
-    CreateProductAction,
-    DeleteProductAction,
-    ProductsActions,
+    CreateProductSuccessAction,
+    DeleteProductAction, LoadProductsSuccessAction,
+    ProductsAction,
     ProductsActionType,
     UpdateProductAction
-} from '../actions/products.actions';
+} from './products.actions';
 
 export interface ProductsState {
     availableProducts: Product[],
@@ -18,6 +18,13 @@ const initialState: ProductsState = {
     userProducts: PRODUCTS.filter(product => product.ownerId === 'u1')
 };
 
+const onLoadProductsSuccess = (state: ProductsState, action: LoadProductsSuccessAction): ProductsState => {
+    return {
+        availableProducts: state.availableProducts.concat(action.products),
+        userProducts: state.userProducts.concat(action.products)
+    };
+};
+
 const onDeleteProduct = (state: ProductsState, action: DeleteProductAction): ProductsState => {
     return {
         ...state,
@@ -25,19 +32,11 @@ const onDeleteProduct = (state: ProductsState, action: DeleteProductAction): Pro
     };
 };
 
-const onCreateProduct = (state: ProductsState, action: CreateProductAction): ProductsState => {
-    const newProduct: Product = new Product(
-        new Date().toString(),
-        'u1',
-        action.title,
-        action.imageUrl,
-        action.description,
-        +action.price
-    );
+const onCreateProductSuccess = (state: ProductsState, action: CreateProductSuccessAction): ProductsState => {
     return {
         ...state,
-        availableProducts: state.availableProducts.concat(newProduct),
-        userProducts: state.userProducts.concat(newProduct)
+        availableProducts: state.availableProducts.concat(action.product),
+        userProducts: state.userProducts.concat(action.product)
     };
 };
 
@@ -66,12 +65,14 @@ const onUpdateProduct = (state: ProductsState, action: UpdateProductAction): Pro
     };
 };
 
-const productsReducer = (state: ProductsState = initialState, action: ProductsActions): ProductsState => {
+const productsReducer = (state: ProductsState = initialState, action: ProductsAction): ProductsState => {
     switch (action.type) {
+        case ProductsActionType.LOAD_PRODUCTS_SUCCESS:
+            return onLoadProductsSuccess(state, action as LoadProductsSuccessAction);
         case ProductsActionType.DELETE_PRODUCT:
            return onDeleteProduct(state, action as DeleteProductAction);
-        case ProductsActionType.CREATE_PRODUCT:
-            return onCreateProduct(state, action as CreateProductAction);
+        case ProductsActionType.CREATE_PRODUCT_SUCCESS:
+            return onCreateProductSuccess(state, action as CreateProductSuccessAction);
         case ProductsActionType.UPDATE_PRODUCT:
             return onUpdateProduct(state, action as UpdateProductAction);
         default:

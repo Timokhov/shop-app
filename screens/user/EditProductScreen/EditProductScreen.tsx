@@ -6,10 +6,9 @@ import { useDispatch } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { Product } from '../../../models/product';
-import * as FromStoreService from '../../../services/form-store/form-store.service'
-
-import * as ProductsActions from '../../../store/actions/products.actions';
 import InputControl from '../../../components/UI/InputControl/InputControl';
+import * as FromStoreService from '../../../services/form-store/form-store.service'
+import * as ProductsActions from '../../../store/products/products.actions';
 
 interface EditProductScreenProps extends NavigationStackScreenProps {
     product: Product

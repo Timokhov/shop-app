@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
-import * as CartActions from '../../../store/actions/cart.actions';
+import * as CartActions from '../../../store/cart/cart.actions';
 
 interface ProductDetailsScreenProps extends NavigationStackScreenProps {
     product: Product

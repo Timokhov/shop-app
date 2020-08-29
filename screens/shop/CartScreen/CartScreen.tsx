@@ -8,8 +8,8 @@ import Card from '../../../components/UI/Card/Card';
 import { COLORS } from '../../../constants/colors';
 import { ExpandedCartItem } from '../../../models/cart-item';
 import { RootState } from '../../../store/store';
-import * as CartActions from '../../../store/actions/cart.actions';
-import * as OrdersActions from '../../../store/actions/orders.actions';
+import * as CartActions from '../../../store/cart/cart.actions';
+import * as OrdersActions from '../../../store/orders/orders.actions';
 
 const CartScreen = () => {
 

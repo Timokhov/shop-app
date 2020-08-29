@@ -1,5 +1,5 @@
 import { Order } from '../../models/order';
-import { AddOrderAction, OrdersAction, OrdersActionType } from '../actions/orders.actions';
+import { AddOrderAction, OrdersAction, OrdersActionType } from './orders.actions';
 
 export interface OrdersState {
     orders: Order[]

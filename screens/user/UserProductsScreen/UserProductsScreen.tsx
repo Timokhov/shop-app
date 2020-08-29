@@ -10,7 +10,7 @@ import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/Custom
 import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
 import { RootState } from '../../../store/store';
-import * as ProductsActions from '../../../store/actions/products.actions';
+import * as ProductsActions from '../../../store/products/products.actions';
 
 const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, FlatList, ListRenderItemInfo } from 'react-native';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -8,7 +8,8 @@ import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
 import { Dispatch, Action } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
-import * as CartActions from '../../../store/actions/cart.actions';
+import * as CartActions from '../../../store/cart/cart.actions';
+import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
 
@@ -18,6 +19,10 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
         (state: RootState) => state.productsState.availableProducts
     );
     const dispatch: Dispatch<Action> = useDispatch();
+
+    useEffect(() => {
+        dispatch(ProductsActions.loadProducts());
+    }, []);
 
     const onViewDetails = (product: Product) => {
         props.navigation.navigate('ProductDetails', { product: product });
