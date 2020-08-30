@@ -29,7 +29,7 @@ function* loadProductsSaga() {
         });
         yield put(ProductsActions.loadProductsSuccess(products));
     } catch (error) {
-        yield put(ProductsActions.loadProductsFail(error.message));
+        yield put(ProductsActions.loadProductsFail('Something went wrong!'));
     }
 }
 
@@ -54,7 +54,7 @@ function* createProductSaga(action: CreateProductAction) {
             )
         ));
     } catch (error) {
-        yield put(ProductsActions.createProductFail(error.message));
+        yield put(ProductsActions.createProductFail('Something went wrong!'));
     }
 }
 
@@ -75,15 +75,14 @@ function* updateProductSaga(action: UpdateProductAction) {
             action.description
         ));
     } catch (error) {
-        yield put(ProductsActions.updateProductFail(error.message));
+        yield put(ProductsActions.updateProductFail('Something went wrong!'));
     }
 }
 
 function* deleteProductSaga(action: DeleteProductAction) {
     yield put(ProductsActions.deleteProductStart());
     try {
-        const response = yield ProductsService.deleteProduct(action.productId);
-        yield console.log(yield JSON.stringify(response));
+        yield ProductsService.deleteProduct(action.productId);
         yield put(ProductsActions.deleteProductSuccess(action.productId,));
     } catch (error) {
         yield put(ProductsActions.deleteProductFail());

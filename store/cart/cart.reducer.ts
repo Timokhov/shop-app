@@ -66,7 +66,7 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
     }
 };
 
-const onAddOrder = (): CartState => {
+const onCreateOrderSuccess = (): CartState => {
     return initialState;
 };
 
@@ -91,8 +91,8 @@ const cartReducer = (state: CartState = initialState, action: CartAction | Order
             return onAddToCart(state, action as AddToCartAction);
         case CartActionType.REMOVE_FROM_CART:
             return onRemoveFromCart(state, action as RemoveFromCartAction);
-        case OrdersActionType.ADD_ORDER:
-            return onAddOrder();
+        case OrdersActionType.CREATE_ORDER_SUCCESS:
+            return onCreateOrderSuccess();
         case ProductsActionType.DELETE_PRODUCT:
             return onDeleteProduct(state, action as DeleteProductAction);
         default:
