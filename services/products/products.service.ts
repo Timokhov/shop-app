@@ -16,10 +16,22 @@ export const createProduct = (ownerId: string, title: string, imageUrl: string, 
                 price
             })
         }
-    ).then((response: Response) => response.json());
+    ).then((response: Response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Something went wrong!');
+        }
+    });
 };
 
 export const loadProducts = (): Promise<FirebaseProductsResponse> => {
     return fetch('https://shop-app-72e31.firebaseio.com/products.json')
-        .then((response: Response) => response.json());
+        .then((response: Response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        });
 };

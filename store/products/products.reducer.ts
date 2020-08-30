@@ -2,7 +2,7 @@ import { PRODUCTS } from '../../data/dummy-data';
 import { Product } from '../../models/product';
 import {
     CreateProductSuccessAction,
-    DeleteProductAction, LoadProductsSuccessAction,
+    DeleteProductAction, LoadProductsFailAction, LoadProductsSuccessAction,
     ProductsAction,
     ProductsActionType,
     UpdateProductAction
@@ -11,17 +11,41 @@ import {
 export interface ProductsState {
     availableProducts: Product[],
     userProducts: Product[]
+    isProductsLoadingInProgress: boolean,
+    loadProductsError: string
 }
 
 const initialState: ProductsState = {
-    availableProducts: PRODUCTS,
-    userProducts: PRODUCTS.filter(product => product.ownerId === 'u1')
+    availableProducts: [],
+    userProducts: [],
+    isProductsLoadingInProgress: false,
+    loadProductsError: ''
+};
+
+const onLoadProductsStart = (state: ProductsState, action: ProductsAction): ProductsState => {
+    return {
+        ...state,
+        isProductsLoadingInProgress: true,
+        loadProductsError: ''
+    };
 };
 
 const onLoadProductsSuccess = (state: ProductsState, action: LoadProductsSuccessAction): ProductsState => {
     return {
-        availableProducts: state.availableProducts.concat(action.products),
-        userProducts: state.userProducts.concat(action.products)
+        ...state,
+        availableProducts: action.products,
+        userProducts: action.products,
+        isProductsLoadingInProgress: false
+    };
+};
+
+const onLoadProductsFail = (state: ProductsState, action: LoadProductsFailAction): ProductsState => {
+    return {
+        ...state,
+        availableProducts: [],
+        userProducts: [],
+        isProductsLoadingInProgress: false,
+        loadProductsError: action.error
     };
 };
 
@@ -67,8 +91,12 @@ const onUpdateProduct = (state: ProductsState, action: UpdateProductAction): Pro
 
 const productsReducer = (state: ProductsState = initialState, action: ProductsAction): ProductsState => {
     switch (action.type) {
+        case ProductsActionType.LOAD_PRODUCTS_START:
+            return onLoadProductsStart(state, action);
         case ProductsActionType.LOAD_PRODUCTS_SUCCESS:
             return onLoadProductsSuccess(state, action as LoadProductsSuccessAction);
+        case ProductsActionType.LOAD_PRODUCTS_FAIL:
+            return onLoadProductsFail(state, action as LoadProductsFailAction);
         case ProductsActionType.DELETE_PRODUCT:
            return onDeleteProduct(state, action as DeleteProductAction);
         case ProductsActionType.CREATE_PRODUCT_SUCCESS:

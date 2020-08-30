@@ -1,5 +1,13 @@
-import React, { useEffect } from 'react';
-import { Button, FlatList, ListRenderItemInfo } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    Button,
+    FlatList,
+    ListRenderItemInfo,
+    ActivityIndicator,
+    View,
+    StyleSheet,
+    RefreshControl
+} from 'react-native';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
@@ -12,17 +20,40 @@ import * as CartActions from '../../../store/cart/cart.actions';
 import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
+import Error from '../../../components/UI/Error/Error';
+import { NavigationEventSubscription } from 'react-navigation';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 
+    const [isRefreshing, setRefreshing] = useState(false);
+
     const productList: Product[] = useSelector(
         (state: RootState) => state.productsState.availableProducts
+    );
+    const isProductsLoadingInProgress: boolean = useSelector(
+        (state: RootState) => state.productsState.isProductsLoadingInProgress
+    );
+    const loadProductsError: string = useSelector(
+        (state: RootState) => state.productsState.loadProductsError
     );
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {
         dispatch(ProductsActions.loadProducts());
-    }, []);
+        const willFocusSubscription: NavigationEventSubscription = props.navigation
+            .addListener(
+                'willFocus',
+                () => dispatch(ProductsActions.loadProducts())
+            );
+
+        return () => {
+            willFocusSubscription.remove();
+        }
+    }, [dispatch]);
+
+    const onRefresh = () => {
+        dispatch(ProductsActions.loadProducts());
+    };
 
     const onViewDetails = (product: Product) => {
         props.navigation.navigate('ProductDetails', { product: product });
@@ -46,10 +77,40 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
         </ProductInfo>
     };
 
-    return (
-       <FlatList data={ productList } renderItem={ renderProduct }/>
+    const refreshControl: React.ReactElement = (
+        <RefreshControl refreshing={ isRefreshing }
+                        onRefresh={ onRefresh }
+                        colors={ [COLORS.primary] }
+        />
     );
+
+    if (isProductsLoadingInProgress) {
+        return (
+            <View style={ styles.content }>
+                <ActivityIndicator size="large" color={ COLORS.primary }/>
+            </View>
+        );
+    } else if(loadProductsError) {
+        return <Error message={ loadProductsError } onReload={ onRefresh }/>;
+    } else if(!productList || productList.length === 0) {
+        return <Error message="No products found." onReload={ onRefresh }/>;
+    } else {
+        return (
+            <FlatList data={ productList } 
+                      renderItem={ renderProduct } 
+                      refreshControl={ refreshControl }
+            />
+        );
+    }
 };
+
+const styles = StyleSheet.create({
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});
 
 ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
     return {

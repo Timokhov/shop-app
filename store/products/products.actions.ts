@@ -25,6 +25,10 @@ export interface LoadProductsSuccessAction extends ProductsAction {
     products: Product[]
 }
 
+export interface LoadProductsFailAction extends ProductsAction {
+    error: string
+}
+
 export interface DeleteProductAction extends ProductsAction {
     productId: string
 }
@@ -66,9 +70,10 @@ export const loadProductsSuccess = (products: Product[]): LoadProductsSuccessAct
     };
 };
 
-export const loadProductsFail = (): ProductsAction => {
+export const loadProductsFail = (error: string): LoadProductsFailAction => {
     return {
-        type: ProductsActionType.LOAD_PRODUCTS_FAIL
+        type: ProductsActionType.LOAD_PRODUCTS_FAIL,
+        error: error
     };
 };
 

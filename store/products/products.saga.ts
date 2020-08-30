@@ -27,7 +27,7 @@ function* loadProductsSaga() {
         });
         yield put(ProductsActions.loadProductsSuccess(products));
     } catch (error) {
-        yield put(ProductsActions.loadProductsFail());
+        yield put(ProductsActions.loadProductsFail(error.message));
     }
 }
 
