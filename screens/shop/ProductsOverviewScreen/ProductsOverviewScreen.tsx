@@ -22,6 +22,8 @@ import { RootState } from '../../../store/store';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
 import Error from '../../../components/UI/Error/Error';
 import { NavigationEventSubscription } from 'react-navigation';
+import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
+import { HttpState } from '../../../models/http-state';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 
@@ -30,11 +32,8 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     const productList: Product[] = useSelector(
         (state: RootState) => state.productsState.availableProducts
     );
-    const isProductsLoadingInProgress: boolean = useSelector(
-        (state: RootState) => state.productsState.isProductsLoadingInProgress
-    );
-    const loadProductsError: string = useSelector(
-        (state: RootState) => state.productsState.loadProductsError
+    const loadProductsHttpState: HttpState = useSelector(
+        (state: RootState) => state.productsState.loadProductsHttpState
     );
     const dispatch: Dispatch<Action> = useDispatch();
 
@@ -84,14 +83,10 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
         />
     );
 
-    if (isProductsLoadingInProgress) {
-        return (
-            <View style={ styles.content }>
-                <ActivityIndicator size="large" color={ COLORS.primary }/>
-            </View>
-        );
-    } else if(loadProductsError) {
-        return <Error message={ loadProductsError } onReload={ onRefresh }/>;
+    if (loadProductsHttpState.requestInProgress) {
+        return <ScreenLoader/>;
+    } else if(loadProductsHttpState.error) {
+        return <Error message={ loadProductsHttpState.error } onReload={ onRefresh }/>;
     } else if(!productList || productList.length === 0) {
         return <Error message="No products found." onReload={ onRefresh }/>;
     } else {
@@ -104,13 +99,7 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     }
 };
 
-const styles = StyleSheet.create({
-    content: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-});
+const styles = StyleSheet.create({});
 
 ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
     return {

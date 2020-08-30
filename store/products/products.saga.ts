@@ -1,13 +1,15 @@
 import { put, takeEvery } from 'redux-saga/effects';
-import { CreateProductAction, ProductsActionType } from './products.actions';
+import { CreateProductAction, DeleteProductAction, ProductsActionType, UpdateProductAction } from './products.actions';
 import * as ProductsActions from './products.actions';
 import * as ProductsService from '../../services/products/products.service';
 import { Product } from '../../models/product';
-import { FirebasePostResponse, FirebaseProductData, FirebaseProductsResponse } from '../../models/firebase';
+import { FirebaseNameResponse, FirebaseProductData, FirebaseProductsResponse } from '../../models/firebase';
 
 export function* watchProductsSaga() {
     yield takeEvery(ProductsActionType.LOAD_PRODUCTS, loadProductsSaga);
     yield takeEvery(ProductsActionType.CREATE_PRODUCT, createProductSaga);
+    yield takeEvery(ProductsActionType.UPDATE_PRODUCT, updateProductSaga);
+    yield takeEvery(ProductsActionType.DELETE_PRODUCT, deleteProductSaga);
 }
 
 function* loadProductsSaga() {
@@ -34,7 +36,7 @@ function* loadProductsSaga() {
 function* createProductSaga(action: CreateProductAction) {
     yield put(ProductsActions.createProductStart());
     try {
-        const response: FirebasePostResponse = yield ProductsService.createProduct(
+        const response: FirebaseNameResponse = yield ProductsService.createProduct(
             'u1',
             action.title,
             action.imageUrl,
@@ -52,6 +54,38 @@ function* createProductSaga(action: CreateProductAction) {
             )
         ));
     } catch (error) {
-        yield put(ProductsActions.createProductFail());
+        yield put(ProductsActions.createProductFail(error.message));
+    }
+}
+
+function* updateProductSaga(action: UpdateProductAction) {
+    yield put(ProductsActions.updateProductStart());
+    try {
+        yield ProductsService.updateProduct(
+            action.productId,
+            'u1',
+            action.title,
+            action.imageUrl,
+            action.description
+        );
+        yield put(ProductsActions.updateProductSuccess(
+            action.productId,
+            action.title,
+            action.imageUrl,
+            action.description
+        ));
+    } catch (error) {
+        yield put(ProductsActions.updateProductFail(error.message));
+    }
+}
+
+function* deleteProductSaga(action: DeleteProductAction) {
+    yield put(ProductsActions.deleteProductStart());
+    try {
+        const response = yield ProductsService.deleteProduct(action.productId);
+        yield console.log(yield JSON.stringify(response));
+        yield put(ProductsActions.deleteProductSuccess(action.productId,));
+    } catch (error) {
+        yield put(ProductsActions.deleteProductFail());
     }
 }

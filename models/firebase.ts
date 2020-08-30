@@ -1,4 +1,4 @@
-export interface FirebasePostResponse {
+export interface FirebaseNameResponse {
     name: string
 }
 

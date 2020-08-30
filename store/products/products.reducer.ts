@@ -1,32 +1,41 @@
-import { PRODUCTS } from '../../data/dummy-data';
 import { Product } from '../../models/product';
 import {
+    CreateProductFailAction,
     CreateProductSuccessAction,
-    DeleteProductAction, LoadProductsFailAction, LoadProductsSuccessAction,
+    DeleteProductAction, DeleteProductSuccessAction, LoadProductsFailAction, LoadProductsSuccessAction,
     ProductsAction,
-    ProductsActionType,
-    UpdateProductAction
+    ProductsActionType, UpdateProductFailAction,
+    UpdateProductSuccessAction
 } from './products.actions';
+import { HttpState } from '../../models/http-state';
 
 export interface ProductsState {
     availableProducts: Product[],
-    userProducts: Product[]
-    isProductsLoadingInProgress: boolean,
-    loadProductsError: string
+    userProducts: Product[],
+    loadProductsHttpState: HttpState,
+    createUpdateProductHttpState: HttpState
 }
 
 const initialState: ProductsState = {
     availableProducts: [],
     userProducts: [],
-    isProductsLoadingInProgress: false,
-    loadProductsError: ''
+    loadProductsHttpState: {
+        requestInProgress: false,
+        error: ''
+    },
+    createUpdateProductHttpState: {
+        requestInProgress: false,
+        error: ''
+    }
 };
 
 const onLoadProductsStart = (state: ProductsState, action: ProductsAction): ProductsState => {
     return {
         ...state,
-        isProductsLoadingInProgress: true,
-        loadProductsError: ''
+        loadProductsHttpState: {
+            requestInProgress: true,
+            error: ''
+        }
     };
 };
 
@@ -35,7 +44,10 @@ const onLoadProductsSuccess = (state: ProductsState, action: LoadProductsSuccess
         ...state,
         availableProducts: action.products,
         userProducts: action.products,
-        isProductsLoadingInProgress: false
+        loadProductsHttpState: {
+            requestInProgress: false,
+            error: ''
+        }
     };
 };
 
@@ -44,15 +56,20 @@ const onLoadProductsFail = (state: ProductsState, action: LoadProductsFailAction
         ...state,
         availableProducts: [],
         userProducts: [],
-        isProductsLoadingInProgress: false,
-        loadProductsError: action.error
+        loadProductsHttpState: {
+            requestInProgress: false,
+            error: action.error
+        }
     };
 };
 
-const onDeleteProduct = (state: ProductsState, action: DeleteProductAction): ProductsState => {
+const onCreateProductStart = (state: ProductsState, action: ProductsAction): ProductsState => {
     return {
         ...state,
-        userProducts: state.userProducts.filter(product => product.id !== action.productId)
+        createUpdateProductHttpState: {
+            requestInProgress: true,
+            error: ''
+        }
     };
 };
 
@@ -60,11 +77,35 @@ const onCreateProductSuccess = (state: ProductsState, action: CreateProductSucce
     return {
         ...state,
         availableProducts: state.availableProducts.concat(action.product),
-        userProducts: state.userProducts.concat(action.product)
+        userProducts: state.userProducts.concat(action.product),
+        createUpdateProductHttpState: {
+            requestInProgress: false,
+            error: ''
+        }
     };
 };
 
-const onUpdateProduct = (state: ProductsState, action: UpdateProductAction): ProductsState => {
+const onCreateProductFail = (state: ProductsState, action: CreateProductFailAction): ProductsState => {
+    return {
+        ...state,
+        createUpdateProductHttpState: {
+            requestInProgress: false,
+            error: action.error
+        }
+    };
+};
+
+const onUpdateProductStart = (state: ProductsState, action: ProductsAction): ProductsState => {
+    return {
+        ...state,
+        createUpdateProductHttpState: {
+            requestInProgress: true,
+            error: ''
+        }
+    };
+};
+
+const onUpdateProductSuccess = (state: ProductsState, action: UpdateProductSuccessAction): ProductsState => {
     const userProductIndex: number = state.userProducts.findIndex(product => product.id === action.productId);
     const updatedProduct: Product = new Product(
         action.productId,
@@ -85,7 +126,28 @@ const onUpdateProduct = (state: ProductsState, action: UpdateProductAction): Pro
     return {
         ...state,
         availableProducts: updatedAvailableProducts,
-        userProducts: updatedUserProducts
+        userProducts: updatedUserProducts,
+        createUpdateProductHttpState: {
+            requestInProgress: false,
+            error: ''
+        }
+    };
+};
+
+const onUpdateProductFail = (state: ProductsState, action: UpdateProductFailAction): ProductsState => {
+    return {
+        ...state,
+        createUpdateProductHttpState: {
+            requestInProgress: false,
+            error: action.error
+        }
+    };
+};
+
+const onDeleteProductSuccess = (state: ProductsState, action: DeleteProductSuccessAction): ProductsState => {
+    return {
+        ...state,
+        userProducts: state.userProducts.filter(product => product.id !== action.productId)
     };
 };
 
@@ -97,12 +159,20 @@ const productsReducer = (state: ProductsState = initialState, action: ProductsAc
             return onLoadProductsSuccess(state, action as LoadProductsSuccessAction);
         case ProductsActionType.LOAD_PRODUCTS_FAIL:
             return onLoadProductsFail(state, action as LoadProductsFailAction);
-        case ProductsActionType.DELETE_PRODUCT:
-           return onDeleteProduct(state, action as DeleteProductAction);
+        case ProductsActionType.CREATE_PRODUCT_START:
+            return onCreateProductStart(state, action);
         case ProductsActionType.CREATE_PRODUCT_SUCCESS:
             return onCreateProductSuccess(state, action as CreateProductSuccessAction);
-        case ProductsActionType.UPDATE_PRODUCT:
-            return onUpdateProduct(state, action as UpdateProductAction);
+        case ProductsActionType.CREATE_PRODUCT_FAIL:
+            return onCreateProductFail(state, action as CreateProductFailAction);
+        case ProductsActionType.UPDATE_PRODUCT_START:
+            return onUpdateProductStart(state, action);
+        case ProductsActionType.UPDATE_PRODUCT_SUCCESS:
+            return onUpdateProductSuccess(state, action as UpdateProductSuccessAction);
+        case ProductsActionType.UPDATE_PRODUCT_FAIL:
+            return onUpdateProductFail(state, action as UpdateProductFailAction);
+        case ProductsActionType.DELETE_PRODUCT_SUCCESS:
+           return onDeleteProductSuccess(state, action as DeleteProductAction);
         default:
             return state;
     }
