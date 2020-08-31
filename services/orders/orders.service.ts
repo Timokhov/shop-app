@@ -1,7 +1,19 @@
 import { ExpandedCartItem } from '../../models/cart-item';
-import { FirebaseNameResponse } from '../../models/firebase';
+import { FirebaseNameResponse, FirebaseOrdersResponse } from '../../models/firebase';
 
-export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number, date: string): Promise<FirebaseNameResponse> => {
+export const loadOrders = (): Promise<FirebaseOrdersResponse> => {
+    return fetch('https://shop-app-72e31.firebaseio.com/orders/u1.json')
+        .then((response: Response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.log('Error');
+                throw new Error('Something went wrong');
+            }
+        });
+};
+
+export const createOrder = (items: ExpandedCartItem[], totalAmount: number, date: string): Promise<FirebaseNameResponse> => {
     return fetch(
         'https://shop-app-72e31.firebaseio.com/orders/u1.json',
         {
@@ -10,7 +22,7 @@ export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number, 
                 'Content-Type': 'application-json'
             },
             body: JSON.stringify({
-                cartItems,
+                items,
                 totalAmount,
                 date
             })
@@ -22,4 +34,4 @@ export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number, 
             throw new Error('Something went wrong!');
         }
     });
-}
+};
