@@ -17,9 +17,6 @@ import Error from '../../../components/UI/Error/Error';
 import * as ProductsActions from '../../../store/products/products.actions';
 
 const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
-
-    const [isRefreshing, setRefreshing] = useState(false);
-
     const userProducts: Product[] = useSelector(
         (state: RootState) => state.productsState.userProducts
     );
@@ -75,7 +72,7 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
     };
 
     const refreshControl: React.ReactElement = (
-        <RefreshControl refreshing={ isRefreshing }
+        <RefreshControl refreshing={ loadProductsHttpState.requestInProgress }
                         onRefresh={ onRefresh }
                         colors={ [COLORS.primary] }
         />

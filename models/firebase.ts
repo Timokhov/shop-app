@@ -9,7 +9,7 @@ export interface FirebaseProductData {
     title: string,
     imageUrl: string,
     description: string,
-    price: string
+    price: number
 }
 
 export interface FirebaseOrderData {

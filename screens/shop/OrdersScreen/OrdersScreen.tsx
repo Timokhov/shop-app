@@ -17,9 +17,6 @@ import { RootState } from '../../../store/store';
 import Error from '../../../components/UI/Error/Error';
 
 const OrdersScreen = (props: NavigationDrawerScreenProps) => {
-
-    const [isRefreshing, setRefreshing] = useState(false);
-
     const orders: Order[] = useSelector(
         (state: RootState) => state.ordersState.orders
     );
@@ -50,7 +47,7 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
     };
 
     const refreshControl: React.ReactElement = (
-        <RefreshControl refreshing={ isRefreshing }
+        <RefreshControl refreshing={ loadOrdersHttpState.requestInProgress }
                         onRefresh={ onRefresh }
                         colors={ [COLORS.primary] }
         />

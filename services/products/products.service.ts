@@ -11,7 +11,7 @@ export const loadProducts = (): Promise<FirebaseProductsResponse> => {
         });
 };
 
-export const createProduct = (ownerId: string, title: string, imageUrl: string, description: string, price: string): Promise<FirebaseNameResponse> => {
+export const createProduct = (ownerId: string, title: string, imageUrl: string, description: string, price: number): Promise<FirebaseNameResponse> => {
     return fetch(
         'https://shop-app-72e31.firebaseio.com/products.json',
         {

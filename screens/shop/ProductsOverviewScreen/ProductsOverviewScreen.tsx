@@ -24,9 +24,6 @@ import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
-
-    const [isRefreshing, setRefreshing] = useState(false);
-
     const productList: Product[] = useSelector(
         (state: RootState) => state.productsState.availableProducts
     );
@@ -75,7 +72,7 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     };
 
     const refreshControl: React.ReactElement = (
-        <RefreshControl refreshing={ isRefreshing }
+        <RefreshControl refreshing={ loadProductsHttpState.requestInProgress }
                         onRefresh={ onRefresh }
                         colors={ [COLORS.primary] }
         />

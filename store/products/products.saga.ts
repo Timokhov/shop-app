@@ -24,7 +24,7 @@ function* loadProductsSaga() {
                 productData.title,
                 productData.imageUrl,
                 productData.description,
-                +productData.price
+                productData.price
             );
         });
         yield put(ProductsActions.loadProductsSuccess(products));
@@ -41,7 +41,7 @@ function* createProductSaga(action: CreateProductAction) {
             action.title,
             action.imageUrl,
             action.description,
-            action.price
+            +action.price
         );
         yield put(ProductsActions.createProductSuccess(
             new Product(
