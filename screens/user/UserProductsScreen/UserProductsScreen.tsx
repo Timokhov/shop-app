@@ -1,5 +1,6 @@
-import React from 'react';
-import { Button, FlatList, ListRenderItemInfo, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, FlatList, ListRenderItemInfo, Alert, RefreshControl } from 'react-native';
+import { NavigationEventSubscription } from 'react-navigation';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
@@ -7,17 +8,42 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { COLORS } from '../../../constants/colors';
+import { HttpState } from '../../../models/http-state';
 import { Product } from '../../../models/product';
 import { RootState } from '../../../store/store';
+import Error from '../../../components/UI/Error/Error';
 import * as ProductsActions from '../../../store/products/products.actions';
 
 const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
 
+    const [isRefreshing, setRefreshing] = useState(false);
+
     const userProducts: Product[] = useSelector(
         (state: RootState) => state.productsState.userProducts
     );
+    const loadProductsHttpState: HttpState = useSelector(
+        (state: RootState) => state.productsState.loadProductsHttpState
+    );
     const dispatch: Dispatch<Action> = useDispatch();
+
+    useEffect(() => {
+        dispatch(ProductsActions.loadProducts());
+        const willFocusSubscription: NavigationEventSubscription = props.navigation
+            .addListener(
+                'willFocus',
+                () => dispatch(ProductsActions.loadProducts())
+            );
+
+        return () => {
+            willFocusSubscription.remove();
+        }
+    }, [dispatch]);
+
+    const onRefresh = () => {
+        dispatch(ProductsActions.loadProducts());
+    };
 
     const onEdit = (product: Product) => {
         props.navigation.navigate('EditProduct', { product: product });
@@ -48,9 +74,27 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
         </ProductInfo>
     };
 
-    return (
-        <FlatList data={ userProducts } renderItem={ renderProduct }/>
+    const refreshControl: React.ReactElement = (
+        <RefreshControl refreshing={ isRefreshing }
+                        onRefresh={ onRefresh }
+                        colors={ [COLORS.primary] }
+        />
     );
+
+    if (loadProductsHttpState.requestInProgress) {
+        return <ScreenLoader/>;
+    } else if (loadProductsHttpState.error) {
+        return <Error message={ loadProductsHttpState.error } onReload={ onRefresh }/>;
+    } else if (!userProducts || userProducts.length === 0) {
+        return <Error message="No products found." onReload={ onRefresh }/>;
+    } else {
+        return (
+            <FlatList data={ userProducts }
+                      renderItem={ renderProduct }
+                      refreshControl={ refreshControl }
+            />
+        );
+    }
 };
 
 UserProductsScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {

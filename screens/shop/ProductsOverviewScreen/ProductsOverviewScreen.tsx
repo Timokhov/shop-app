@@ -3,8 +3,6 @@ import {
     Button,
     FlatList,
     ListRenderItemInfo,
-    ActivityIndicator,
-    View,
     StyleSheet,
     RefreshControl
 } from 'react-native';

@@ -24,8 +24,8 @@ const Error = (props: ErrorProps) => {
             <Text>{ props.message }</Text>
             <Button title="Reload" onPress={ props.onReload } color={ COLORS.primary }/>
         </ScrollView>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     error: {
