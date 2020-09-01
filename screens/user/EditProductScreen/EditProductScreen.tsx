@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
@@ -22,6 +22,8 @@ interface EditProductScreenProps extends NavigationStackScreenProps {
 const EditProductScreen = (props: EditProductScreenProps) => {
     const product: Product = props.navigation.getParam('product');
 
+    const [isShowLoader, setShowLoader] = useState(false);
+
     const user: User = useSelector(
         (state: RootState) => state.authState.user
     );
@@ -32,8 +34,13 @@ const EditProductScreen = (props: EditProductScreenProps) => {
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {
+        if (createUpdateProductHttpState.requestInProgress) {
+            setShowLoader(true);
+        }
+
         if (previousCreateUpdateProductHttpState?.requestInProgress && !createUpdateProductHttpState.requestInProgress) {
             if (createUpdateProductHttpState.error) {
+                setShowLoader(false);
                 Alert.alert('An error occurred!', createUpdateProductHttpState.error, [{ text: 'Okay' }]);
             } else {
                 props.navigation.goBack();
@@ -108,7 +115,7 @@ const EditProductScreen = (props: EditProductScreenProps) => {
         dispatchFormState(FromStoreService.formUpdate(inputId, newValue, isValid));
     };
 
-    if (createUpdateProductHttpState.requestInProgress) {
+    if (isShowLoader) {
         return <ScreenLoader/>;
     } else {
         return (

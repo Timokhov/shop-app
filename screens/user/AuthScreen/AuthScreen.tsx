@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { View, ScrollView, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
+import { View, ScrollView, StyleSheet, Button, ActivityIndicator, Alert, Keyboard } from 'react-native';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
@@ -19,7 +19,8 @@ enum AuthMode{
 
 const AuthScreen = (props: NavigationStackScreenProps) => {
 
-    const[authMode, setAuthMode] = useState(AuthMode.LOGIN);
+    const [authMode, setAuthMode] = useState(AuthMode.LOGIN);
+    const [isShowLoader, setShowLoader] = useState(false);
 
     const authHttpState: HttpState = useSelector(
         (state: RootState) => state.authState.authHttpState
@@ -30,8 +31,12 @@ const AuthScreen = (props: NavigationStackScreenProps) => {
 
     const previousAuthHttpState: HttpState | undefined = usePreviousValue<HttpState>(authHttpState);
     useEffect(() => {
+        if (authHttpState.requestInProgress) {
+            setShowLoader(true);
+        }
         if (previousAuthHttpState?.requestInProgress && !authHttpState.requestInProgress) {
             if (authHttpState.error) {
+                setShowLoader(false);
                 Alert.alert('An error occurred!', authHttpState.error, [{ text: 'Okay' }]);
             }
         }
@@ -66,6 +71,7 @@ const AuthScreen = (props: NavigationStackScreenProps) => {
     };
 
     const onAuth = () => {
+        Keyboard.dismiss();
         if (formState.isValid) {
             if (authMode === AuthMode.LOGIN) {
                 dispatch(AuthActions.login(formState.controls['email'].value, formState.controls['password'].value));
@@ -84,7 +90,7 @@ const AuthScreen = (props: NavigationStackScreenProps) => {
     return (
         <View style={ styles.screen }>
             <Card style={ styles.auth }>
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps="handled">
                     <InputControl label="Email"
                                   value={ formState.controls['email'].value }
                                   onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('email', newValue, isValid) }
@@ -108,7 +114,7 @@ const AuthScreen = (props: NavigationStackScreenProps) => {
                     />
                     <View>
                         {
-                            authHttpState.requestInProgress
+                            isShowLoader
                                 ? <ActivityIndicator size="small" color={ COLORS.primary }/>
                                 : (
                                     <>
