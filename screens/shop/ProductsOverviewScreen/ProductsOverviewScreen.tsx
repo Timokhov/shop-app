@@ -14,6 +14,7 @@ import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
 import { Dispatch, Action } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
+import { User } from '../../../models/user';
 import * as CartActions from '../../../store/cart/cart.actions';
 import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
@@ -24,6 +25,10 @@ import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
+
+    const user: User = useSelector(
+        (state: RootState) => state.authState.user
+    );
     const productList: Product[] = useSelector(
         (state: RootState) => state.productsState.availableProducts
     );
@@ -33,11 +38,11 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {
-        dispatch(ProductsActions.loadProducts());
+        dispatch(ProductsActions.loadProducts(user));
         const willFocusSubscription: NavigationEventSubscription = props.navigation
             .addListener(
                 'willFocus',
-                () => dispatch(ProductsActions.loadProducts())
+                () => dispatch(ProductsActions.loadProducts(user))
             );
 
         return () => {
@@ -46,7 +51,7 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     }, [dispatch]);
 
     const onRefresh = () => {
-        dispatch(ProductsActions.loadProducts());
+        dispatch(ProductsActions.loadProducts(user));
     };
 
     const onViewDetails = (product: Product) => {
@@ -93,8 +98,6 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
         );
     }
 };
-
-const styles = StyleSheet.create({});
 
 ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
     return {

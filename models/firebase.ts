@@ -21,3 +21,21 @@ export interface FirebaseOrderData {
 export type FirebaseProductsResponse = { [index: string]: FirebaseProductData }
 
 export type FirebaseOrdersResponse = { [index: string]: FirebaseOrderData }
+
+export interface FirebaseUserData {
+    idToken: string,
+    email: string,
+    refreshToken: string,
+    expiresIn: string,
+    localId: string
+}
+
+export interface FirebaseError {
+    error: string
+}
+
+export interface FirebaseAuthError {
+    error: {
+        message: string
+    }
+}

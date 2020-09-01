@@ -1,5 +1,11 @@
 import { put, takeEvery } from 'redux-saga/effects';
-import { CreateProductAction, DeleteProductAction, ProductsActionType, UpdateProductAction } from './products.actions';
+import {
+    CreateProductAction,
+    DeleteProductAction,
+    LoadProductsAction,
+    ProductsActionType,
+    UpdateProductAction
+} from './products.actions';
 import * as ProductsActions from './products.actions';
 import * as ProductsService from '../../services/products/products.service';
 import { Product } from '../../models/product';
@@ -12,11 +18,11 @@ export function* watchProductsSaga() {
     yield takeEvery(ProductsActionType.DELETE_PRODUCT, deleteProductSaga);
 }
 
-function* loadProductsSaga() {
+function* loadProductsSaga(action: LoadProductsAction) {
     yield put(ProductsActions.loadProductsStart());
     try {
         const response: FirebaseProductsResponse = yield ProductsService.loadProducts();
-        const products: Product[] = yield Object.keys(response).map(id => {
+        const availableProducts: Product[] = yield Object.keys(response).map(id => {
             const productData: FirebaseProductData = response[id];
             return new Product(
                 id,
@@ -27,9 +33,10 @@ function* loadProductsSaga() {
                 productData.price
             );
         });
-        yield put(ProductsActions.loadProductsSuccess(products));
+        const userProducts: Product[] = yield availableProducts.filter(product => product.ownerId === action.user.id);
+        yield put(ProductsActions.loadProductsSuccess(availableProducts, userProducts));
     } catch (error) {
-        yield put(ProductsActions.loadProductsFail('Something went wrong!'));
+        yield put(ProductsActions.loadProductsFail(error.message));
     }
 }
 
@@ -37,16 +44,16 @@ function* createProductSaga(action: CreateProductAction) {
     yield put(ProductsActions.createProductStart());
     try {
         const response: FirebaseNameResponse = yield ProductsService.createProduct(
-            'u1',
             action.title,
             action.imageUrl,
             action.description,
-            +action.price
+            +action.price,
+            action.user
         );
         yield put(ProductsActions.createProductSuccess(
             new Product(
                 response.name,
-                'u1',
+                action.user.id,
                 action.title,
                 action.imageUrl,
                 action.description,
@@ -54,7 +61,7 @@ function* createProductSaga(action: CreateProductAction) {
             )
         ));
     } catch (error) {
-        yield put(ProductsActions.createProductFail('Something went wrong!'));
+        yield put(ProductsActions.createProductFail(error.message));
     }
 }
 
@@ -63,10 +70,10 @@ function* updateProductSaga(action: UpdateProductAction) {
     try {
         yield ProductsService.updateProduct(
             action.productId,
-            'u1',
             action.title,
             action.imageUrl,
-            action.description
+            action.description,
+            action.user
         );
         yield put(ProductsActions.updateProductSuccess(
             action.productId,
@@ -75,14 +82,14 @@ function* updateProductSaga(action: UpdateProductAction) {
             action.description
         ));
     } catch (error) {
-        yield put(ProductsActions.updateProductFail('Something went wrong!'));
+        yield put(ProductsActions.updateProductFail(error.message));
     }
 }
 
 function* deleteProductSaga(action: DeleteProductAction) {
     yield put(ProductsActions.deleteProductStart());
     try {
-        yield ProductsService.deleteProduct(action.productId);
+        yield ProductsService.deleteProduct(action.productId, action.user);
         yield put(ProductsActions.deleteProductSuccess(action.productId,));
     } catch (error) {
         yield put(ProductsActions.deleteProductFail());

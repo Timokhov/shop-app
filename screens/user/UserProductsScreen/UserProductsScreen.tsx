@@ -12,11 +12,16 @@ import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { COLORS } from '../../../constants/colors';
 import { HttpState } from '../../../models/http-state';
 import { Product } from '../../../models/product';
+import { User } from '../../../models/user';
 import { RootState } from '../../../store/store';
 import Error from '../../../components/UI/Error/Error';
 import * as ProductsActions from '../../../store/products/products.actions';
 
 const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
+
+    const user: User = useSelector(
+        (state: RootState) => state.authState.user
+    );
     const userProducts: Product[] = useSelector(
         (state: RootState) => state.productsState.userProducts
     );
@@ -26,11 +31,11 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {
-        dispatch(ProductsActions.loadProducts());
+        dispatch(ProductsActions.loadProducts(user));
         const willFocusSubscription: NavigationEventSubscription = props.navigation
             .addListener(
                 'willFocus',
-                () => dispatch(ProductsActions.loadProducts())
+                () => dispatch(ProductsActions.loadProducts(user))
             );
 
         return () => {
@@ -39,7 +44,7 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
     }, [dispatch]);
 
     const onRefresh = () => {
-        dispatch(ProductsActions.loadProducts());
+        dispatch(ProductsActions.loadProducts(user));
     };
 
     const onEdit = (product: Product) => {
@@ -52,7 +57,7 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
             'Do you really want to delete this item?',
             [
                 { text: 'No', style: 'default' },
-                { text: 'Yes', style: 'destructive', onPress: () => dispatch(ProductsActions.deleteProduct(product.id)) }
+                { text: 'Yes', style: 'destructive', onPress: () => dispatch(ProductsActions.deleteProduct(product.id, user)) }
             ]
         );
     };

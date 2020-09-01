@@ -1,7 +1,7 @@
 export class Product {
     constructor(
         public id: string,
-        public ownerId: string,
+        public ownerId: string | null,
         public title: string,
         public imageUrl: string,
         public description: string,

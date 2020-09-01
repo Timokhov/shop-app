@@ -7,6 +7,7 @@ import { Action, Dispatch } from 'redux';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { Product } from '../../../models/product';
 import InputControl from '../../../components/UI/InputControl/InputControl';
+import { User } from '../../../models/user';
 import * as FromStoreService from '../../../services/form-store/form-store.service'
 import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
@@ -21,6 +22,9 @@ interface EditProductScreenProps extends NavigationStackScreenProps {
 const EditProductScreen = (props: EditProductScreenProps) => {
     const product: Product = props.navigation.getParam('product');
 
+    const user: User = useSelector(
+        (state: RootState) => state.authState.user
+    );
     const createUpdateProductHttpState: HttpState = useSelector(
         (state: RootState) => state.productsState.createUpdateProductHttpState
     );
@@ -77,7 +81,8 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                             product.id,
                             formState.controls['title'].value,
                             formState.controls['imageUrl'].value,
-                            formState.controls['description'].value
+                            formState.controls['description'].value,
+                            user
                         )
                     );
                 } else {
@@ -86,7 +91,8 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                             formState.controls['title'].value,
                             formState.controls['imageUrl'].value,
                             formState.controls['description'].value,
-                            formState.controls['price'].value
+                            formState.controls['price'].value,
+                            user
                         )
                     );
                 }
@@ -116,7 +122,7 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                                       returnKeyType="next"
                                       value={ formState.controls['title'].value }
                                       isValid={ formState.controls['title'].isValid }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid)}
+                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid) }
                                       required
                                       error="Please enter valid title."
                         />

@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { Product } from '../../models/product';
+import { User } from '../../models/user';
 
 export enum ProductsActionType {
     LOAD_PRODUCTS = 'LOAD_PRODUCTS',
@@ -27,8 +28,13 @@ export interface ProductsAction extends Action<ProductsActionType> {
 
 }
 
+export interface LoadProductsAction extends ProductsAction {
+    user: User
+}
+
 export interface LoadProductsSuccessAction extends ProductsAction {
-    products: Product[]
+    availableProducts: Product[],
+    userProducts: Product[]
 }
 
 export interface LoadProductsFailAction extends ProductsAction {
@@ -40,6 +46,7 @@ export interface CreateProductAction extends ProductsAction {
     imageUrl: string,
     description: string,
     price: string,
+    user: User
 }
 
 export interface CreateProductSuccessAction extends ProductsAction {
@@ -54,7 +61,8 @@ export interface UpdateProductAction extends ProductsAction {
     productId: string
     title: string,
     imageUrl: string,
-    description: string
+    description: string,
+    user: User
 }
 
 export interface UpdateProductSuccessAction extends ProductsAction {
@@ -69,16 +77,18 @@ export interface UpdateProductFailAction extends ProductsAction {
 }
 
 export interface DeleteProductAction extends ProductsAction {
-    productId: string
+    productId: string,
+    user: User
 }
 
 export interface DeleteProductSuccessAction extends ProductsAction {
     productId: string
 }
 
-export const loadProducts = (): ProductsAction => {
+export const loadProducts = (user: User): LoadProductsAction => {
     return {
-        type: ProductsActionType.LOAD_PRODUCTS
+        type: ProductsActionType.LOAD_PRODUCTS,
+        user: user
     };
 };
 
@@ -88,10 +98,11 @@ export const loadProductsStart = (): ProductsAction => {
     };
 };
 
-export const loadProductsSuccess = (products: Product[]): LoadProductsSuccessAction => {
+export const loadProductsSuccess = (products: Product[], userProducts: Product[]): LoadProductsSuccessAction => {
     return {
         type: ProductsActionType.LOAD_PRODUCTS_SUCCESS,
-        products: products
+        availableProducts: products,
+        userProducts: userProducts
     };
 };
 
@@ -102,13 +113,14 @@ export const loadProductsFail = (error: string): LoadProductsFailAction => {
     };
 };
 
-export const createProduct = (title: string, imageUrl: string, description: string, price: string): CreateProductAction => {
+export const createProduct = (title: string, imageUrl: string, description: string, price: string, user: User): CreateProductAction => {
     return {
         type: ProductsActionType.CREATE_PRODUCT,
         title: title,
         imageUrl: imageUrl,
         price: price,
-        description: description
+        description: description,
+        user: user
     };
 };
 
@@ -132,13 +144,14 @@ export const createProductFail = (error: string): CreateProductFailAction => {
     };
 };
 
-export const updateProduct = (productId: string, title: string, imageUrl: string, description: string): UpdateProductAction => {
+export const updateProduct = (productId: string, title: string, imageUrl: string, description: string, user: User): UpdateProductAction => {
     return {
         type: ProductsActionType.UPDATE_PRODUCT,
         productId: productId,
         title: title,
         imageUrl: imageUrl,
-        description: description
+        description: description,
+        user: user
     };
 };
 
@@ -165,10 +178,11 @@ export const updateProductFail = (error: string): UpdateProductFailAction => {
     };
 };
 
-export const deleteProduct = (productId: string): DeleteProductAction => {
+export const deleteProduct = (productId: string, user: User): DeleteProductAction => {
     return {
         type: ProductsActionType.DELETE_PRODUCT,
-        productId: productId
+        productId: productId,
+        user: user
     };
 };
 

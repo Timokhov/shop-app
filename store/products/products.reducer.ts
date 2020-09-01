@@ -42,8 +42,8 @@ const onLoadProductsStart = (state: ProductsState, action: ProductsAction): Prod
 const onLoadProductsSuccess = (state: ProductsState, action: LoadProductsSuccessAction): ProductsState => {
     return {
         ...state,
-        availableProducts: action.products,
-        userProducts: action.products,
+        availableProducts: action.availableProducts,
+        userProducts: action.userProducts,
         loadProductsHttpState: {
             requestInProgress: false,
             error: ''

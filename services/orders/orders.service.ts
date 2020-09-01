@@ -1,25 +1,27 @@
 import { ExpandedCartItem } from '../../models/cart-item';
-import { FirebaseNameResponse, FirebaseOrdersResponse } from '../../models/firebase';
+import { FirebaseError, FirebaseNameResponse, FirebaseOrdersResponse } from '../../models/firebase';
+import { User } from '../../models/user';
 
-export const loadOrders = (): Promise<FirebaseOrdersResponse> => {
-    return fetch('https://shop-app-72e31.firebaseio.com/orders/u1.json')
+export const loadOrders = (user: User): Promise<FirebaseOrdersResponse> => {
+    return fetch(`https://shop-app-72e31.firebaseio.com/orders/${user.id}.json`)
         .then((response: Response) => {
             if (response.ok) {
                 return response.json();
             } else {
-                console.log('Error');
-                throw new Error('Something went wrong');
+                return response.json().then((error: FirebaseError) => {
+                    throw new Error(error.error);
+                });
             }
         });
 };
 
-export const createOrder = (items: ExpandedCartItem[], totalAmount: number, date: string): Promise<FirebaseNameResponse> => {
+export const createOrder = (items: ExpandedCartItem[], totalAmount: number, date: string, user: User): Promise<FirebaseNameResponse> => {
     return fetch(
-        'https://shop-app-72e31.firebaseio.com/orders/u1.json',
+        `https://shop-app-72e31.firebaseio.com/orders/${user.id}.json?auth=${user.token}`,
         {
             method: 'POST',
             headers: {
-                'Content-Type': 'application-json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 items,
@@ -31,7 +33,9 @@ export const createOrder = (items: ExpandedCartItem[], totalAmount: number, date
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error('Something went wrong!');
+            return response.json().then((error: FirebaseError) => {
+                throw new Error(error.error);
+            });
         }
     });
 };

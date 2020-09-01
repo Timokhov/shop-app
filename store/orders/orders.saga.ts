@@ -1,7 +1,7 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import * as OrdersActions from './orders.actions';
 import * as OrdersService from '../../services/orders/orders.service';
-import { CreateOrderAction, OrdersActionType } from './orders.actions';
+import { CreateOrderAction, LoadOrdersAction, OrdersActionType } from './orders.actions';
 import { FirebaseNameResponse, FirebaseOrderData, FirebaseOrdersResponse } from '../../models/firebase';
 import { Order } from '../../models/order';
 
@@ -10,10 +10,10 @@ export function* watchOrdersSaga() {
     yield takeEvery(OrdersActionType.CREATE_ORDER, createOrderSaga);
 }
 
-function* loadOrdersSaga() {
+function* loadOrdersSaga(action: LoadOrdersAction) {
     yield put(OrdersActions.loadOrdersStart());
     try {
-        const response: FirebaseOrdersResponse = yield OrdersService.loadOrders();
+        const response: FirebaseOrdersResponse = yield OrdersService.loadOrders(action.user);
         if (response) {
             const orders: Order[] = yield Object.keys(response).map(id => {
                 const orderData: FirebaseOrderData = response[id];
@@ -29,7 +29,7 @@ function* loadOrdersSaga() {
             yield put(OrdersActions.loadOrdersSuccess([]));
         }
     } catch (error) {
-        yield put(OrdersActions.loadOrdersFail('Something went wrong'));
+        yield put(OrdersActions.loadOrdersFail(error.message));
     }
 }
 
@@ -40,7 +40,8 @@ function* createOrderSaga(action: CreateOrderAction) {
         const response: FirebaseNameResponse = yield OrdersService.createOrder(
             action.cartItems,
             action.totalAmount,
-            orderDate.toISOString()
+            orderDate.toISOString(),
+            action.user
         );
         yield put(OrdersActions.createOrderSuccess(
             new Order(
@@ -51,6 +52,6 @@ function* createOrderSaga(action: CreateOrderAction) {
             )
         ));
     } catch (error) {
-        yield put(OrdersActions.createOrderFail('Something went wrong!'));
+        yield put(OrdersActions.createOrderFail(error.message));
     }
 }

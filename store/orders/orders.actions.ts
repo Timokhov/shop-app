@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 import { ExpandedCartItem } from '../../models/cart-item';
 import { Order } from '../../models/order';
+import { User } from '../../models/user';
 
 export enum OrdersActionType {
     LOAD_ORDERS = 'LOAD_ORDERS',
@@ -16,9 +17,8 @@ export enum OrdersActionType {
 
 export interface OrdersAction extends Action<OrdersActionType> {}
 
-export interface CreateOrderAction extends OrdersAction {
-    cartItems: ExpandedCartItem[],
-    totalAmount: number
+export interface LoadOrdersAction extends OrdersAction {
+    user: User
 }
 
 export interface LoadOrdersSuccessAction extends OrdersAction {
@@ -29,6 +29,12 @@ export interface LoadOrdersFailAction extends OrdersAction {
     error: string
 }
 
+export interface CreateOrderAction extends OrdersAction {
+    cartItems: ExpandedCartItem[],
+    totalAmount: number,
+    user: User
+}
+
 export interface CreateOrderSuccessAction extends OrdersAction {
     order: Order
 }
@@ -37,9 +43,10 @@ export interface CreateOrderFailAction extends OrdersAction {
     error: string
 }
 
-export const loadOrders = (): OrdersAction => {
+export const loadOrders = (user: User): LoadOrdersAction => {
     return {
-        type: OrdersActionType.LOAD_ORDERS
+        type: OrdersActionType.LOAD_ORDERS,
+        user: user
     };
 };
 
@@ -63,11 +70,12 @@ export const loadOrdersFail = (error: string): LoadOrdersFailAction => {
     };
 };
 
-export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number): CreateOrderAction => {
+export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number, user: User): CreateOrderAction => {
     return {
         type: OrdersActionType.CREATE_ORDER,
         cartItems: cartItems,
-        totalAmount: totalAmount
+        totalAmount: totalAmount,
+        user: user
     };
 };
 

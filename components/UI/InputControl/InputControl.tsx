@@ -38,7 +38,7 @@ const InputControl = (props: InputControlProps) => {
             isValid = false;
         }
         props.onValueChange(text, isValid);
-    }
+    };
 
     return (
         <View style={ styles.inputControl }>

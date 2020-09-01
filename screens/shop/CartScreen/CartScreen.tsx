@@ -7,6 +7,7 @@ import CartItemInfo from '../../../components/shop/CartItemInfo/CartItemInfo';
 import Card from '../../../components/UI/Card/Card';
 import { COLORS } from '../../../constants/colors';
 import { ExpandedCartItem } from '../../../models/cart-item';
+import { User } from '../../../models/user';
 import { RootState } from '../../../store/store';
 import * as CartActions from '../../../store/cart/cart.actions';
 import * as OrdersActions from '../../../store/orders/orders.actions';
@@ -15,6 +16,9 @@ import { usePreviousValue } from '../../../hooks/previousValue.hook';
 
 const CartScreen = () => {
 
+    const user: User = useSelector(
+        (state: RootState) => state.authState.user
+    );
     const totalAmount: number = useSelector(
         (state: RootState) => state.cartState.totalAmount
     );
@@ -45,7 +49,7 @@ const CartScreen = () => {
     };
 
     const onOrderNow = () => {
-        dispatch(OrdersActions.createOrder(itemsList, totalAmount));
+        dispatch(OrdersActions.createOrder(itemsList, totalAmount, user));
     };
 
     const renderCartItem = (itemInfo: ListRenderItemInfo<ExpandedCartItem>): React.ReactElement => {

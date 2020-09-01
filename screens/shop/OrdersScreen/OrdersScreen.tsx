@@ -12,11 +12,16 @@ import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { COLORS } from '../../../constants/colors';
 import { HttpState } from '../../../models/http-state';
 import { Order } from '../../../models/order';
+import { User } from '../../../models/user';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { RootState } from '../../../store/store';
 import Error from '../../../components/UI/Error/Error';
 
 const OrdersScreen = (props: NavigationDrawerScreenProps) => {
+
+    const user: User = useSelector(
+        (state: RootState) => state.authState.user
+    );
     const orders: Order[] = useSelector(
         (state: RootState) => state.ordersState.orders
     );
@@ -26,11 +31,11 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {
-        dispatch(OrdersActions.loadOrders());
+        dispatch(OrdersActions.loadOrders(user));
         const willFocusSubscription: NavigationEventSubscription = props.navigation
             .addListener(
                 'willFocus',
-                () => dispatch(OrdersActions.loadOrders())
+                () => dispatch(OrdersActions.loadOrders(user))
             );
 
         return () => {
@@ -39,7 +44,7 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
     }, [dispatch]);
 
     const onRefresh = () => {
-        dispatch(OrdersActions.loadOrders());
+        dispatch(OrdersActions.loadOrders(user));
     };
 
     const renderOrder = (itemInfo: ListRenderItemInfo<Order>): React.ReactElement => {

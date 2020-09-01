@@ -1,4 +1,9 @@
-import { FirebaseNameResponse, FirebaseProductsResponse } from '../../models/firebase';
+import {
+    FirebaseError,
+    FirebaseNameResponse,
+    FirebaseProductsResponse
+} from '../../models/firebase';
+import { User } from '../../models/user';
 
 export const loadProducts = (): Promise<FirebaseProductsResponse> => {
     return fetch('https://shop-app-72e31.firebaseio.com/products.json')
@@ -6,21 +11,23 @@ export const loadProducts = (): Promise<FirebaseProductsResponse> => {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('Something went wrong');
+                return response.json().then((error: FirebaseError) => {
+                    throw new Error(error.error);
+                });
             }
         });
 };
 
-export const createProduct = (ownerId: string, title: string, imageUrl: string, description: string, price: number): Promise<FirebaseNameResponse> => {
+export const createProduct = (title: string, imageUrl: string, description: string, price: number, user: User): Promise<FirebaseNameResponse> => {
     return fetch(
-        'https://shop-app-72e31.firebaseio.com/products.json',
+        `https://shop-app-72e31.firebaseio.com/products.json?auth=${user.token}`,
         {
             method: 'POST',
             headers: {
-                'Content-Type': 'application-json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ownerId,
+                ownerId: user.id,
                 title,
                 imageUrl,
                 description,
@@ -31,14 +38,16 @@ export const createProduct = (ownerId: string, title: string, imageUrl: string, 
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error('Something went wrong!');
+            return response.json().then((error: FirebaseError) => {
+                throw new Error(error.error);
+            });
         }
     });
 };
 
-export const updateProduct = (productId: string, ownerId: string, title: string, imageUrl: string, description: string): Promise<FirebaseNameResponse> => {
+export const updateProduct = (productId: string, title: string, imageUrl: string, description: string, user: User): Promise<FirebaseNameResponse> => {
     return fetch(
-        `https://shop-app-72e31.firebaseio.com/products/${productId}.json`,
+        `https://shop-app-72e31.firebaseio.com/products/${productId}.json?auth=${user.token}`,
         {
             method: 'PATCH',
             headers: {
@@ -54,14 +63,16 @@ export const updateProduct = (productId: string, ownerId: string, title: string,
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error('Something went wrong!');
+            return response.json().then((error: FirebaseError) => {
+                throw new Error(error.error);
+            });
         }
     });
 };
 
-export const deleteProduct = (productId: string): Promise<any> => {
+export const deleteProduct = (productId: string, user: User): Promise<any> => {
     return fetch(
-        `https://shop-app-72e31.firebaseio.com/products/${productId}.json`,
+        `https://shop-app-72e31.firebaseio.com/products/${productId}.json?auth=${user.token}`,
         {
             method: 'DELETE'
         }
@@ -69,7 +80,9 @@ export const deleteProduct = (productId: string): Promise<any> => {
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error('Something went wrong!');
+            return response.json().then((error: FirebaseError) => {
+                throw new Error(error.error);
+            });
         }
     });
 };
