@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import { useHttpStateObserver } from '../../../hooks/httpStateObserver';
 import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
 import InputControl from '../../../components/UI/InputControl/InputControl';
@@ -14,7 +15,6 @@ import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
-import { usePreviousValue } from '../../../hooks/previousValue.hook';
 
 interface EditProductScreenProps extends NavigationStackScreenProps {
     product: Product
@@ -31,23 +31,18 @@ const EditProductScreen = (props: EditProductScreenProps) => {
     const createUpdateProductHttpState: HttpState = useSelector(
         (state: RootState) => state.productsState.createUpdateProductHttpState
     );
-    const previousCreateUpdateProductHttpState: Nullable<HttpState> = usePreviousValue<HttpState>(createUpdateProductHttpState);
+
     const dispatch: Dispatch<Action> = useDispatch();
 
-    useEffect(() => {
-        if (createUpdateProductHttpState.requestInProgress) {
-            setShowLoader(true);
+    useHttpStateObserver(
+        createUpdateProductHttpState,
+        () => setShowLoader(true),
+        () => props.navigation.goBack(),
+        () => {
+            setShowLoader(false);
+            Alert.alert('An error occurred!', createUpdateProductHttpState.error, [{ text: 'Okay' }]);
         }
-
-        if (previousCreateUpdateProductHttpState?.requestInProgress && !createUpdateProductHttpState.requestInProgress) {
-            if (createUpdateProductHttpState.error) {
-                setShowLoader(false);
-                Alert.alert('An error occurred!', createUpdateProductHttpState.error, [{ text: 'Okay' }]);
-            } else {
-                props.navigation.goBack();
-            }
-        }
-    }, [createUpdateProductHttpState]);
+    );
 
     const [formState, dispatchFormState] = useReducer(
         FromStoreService.formReducer,

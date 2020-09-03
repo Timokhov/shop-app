@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { View, ScrollView, StyleSheet, Button, ActivityIndicator, Alert, Keyboard } from 'react-native';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,9 +6,8 @@ import { Action, Dispatch } from 'redux';
 import Card from '../../../components/UI/Card/Card';
 import InputControl from '../../../components/UI/InputControl/InputControl';
 import { COLORS } from '../../../constants/colors';
-import { usePreviousValue } from '../../../hooks/previousValue.hook';
+import { useHttpStateObserver } from '../../../hooks/httpStateObserver';
 import { HttpState } from '../../../models/http-state';
-import { Nullable } from '../../../models/nullable';
 import * as FromStoreService from '../../../services/form-store/form-store.service'
 import * as AuthActions from'../../../store/auth/auth.actions';
 import { RootState } from '../../../store/store';
@@ -27,18 +26,15 @@ const AuthScreen = () => {
         (state: RootState) => state.authState.authHttpState
     );
 
-    const previousAuthHttpState: Nullable<HttpState> = usePreviousValue<HttpState>(authHttpState);
-    useEffect(() => {
-        if (authHttpState.requestInProgress) {
-            setShowLoader(true);
+    useHttpStateObserver(
+        authHttpState,
+        () => setShowLoader(true),
+        undefined,
+        () => {
+            setShowLoader(false);
+            Alert.alert('An error occurred!', authHttpState.error, [{ text: 'Okay' }]);
         }
-        if (previousAuthHttpState?.requestInProgress && !authHttpState.requestInProgress) {
-            if (authHttpState.error) {
-                setShowLoader(false);
-                Alert.alert('An error occurred!', authHttpState.error, [{ text: 'Okay' }]);
-            }
-        }
-    }, [authHttpState]);
+    );
 
     const [formState, dispatchFormState] = useReducer(
         FromStoreService.formReducer,

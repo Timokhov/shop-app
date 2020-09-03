@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Button, FlatList, Text, StyleSheet, ListRenderItemInfo, Alert, ActivityIndicator } from 'react-native';
 import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,6 +6,7 @@ import { Action, Dispatch } from 'redux';
 import CartItemInfo from '../../../components/shop/CartItemInfo/CartItemInfo';
 import Card from '../../../components/UI/Card/Card';
 import { COLORS } from '../../../constants/colors';
+import { useHttpStateObserver } from '../../../hooks/httpStateObserver';
 import { ExpandedCartItem } from '../../../models/cart-item';
 import { Nullable } from '../../../models/nullable';
 import { User } from '../../../models/user';
@@ -13,9 +14,10 @@ import { RootState } from '../../../store/store';
 import * as CartActions from '../../../store/cart/cart.actions';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { HttpState } from '../../../models/http-state';
-import { usePreviousValue } from '../../../hooks/previousValue.hook';
 
 const CartScreen = () => {
+
+    const [isShowLoader, setShowLoader] = useState(false);
 
     const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
@@ -33,17 +35,18 @@ const CartScreen = () => {
     const createOrderHttpState: HttpState = useSelector(
         (state: RootState) => state.ordersState.createOrderHttpState
     );
-    const previousCreateOrderHttpState: Nullable<HttpState> = usePreviousValue<HttpState>(createOrderHttpState);
+
     const dispatch: Dispatch<Action> = useDispatch();
 
-    useEffect(() => {
-        if (previousCreateOrderHttpState?.requestInProgress
-            && !createOrderHttpState.requestInProgress
-            && createOrderHttpState.error
-        ) {
+    useHttpStateObserver(
+        createOrderHttpState,
+        () => setShowLoader(true),
+        () => setShowLoader(false),
+        () => {
+            setShowLoader(false);
             Alert.alert('An error occurred!', createOrderHttpState.error, [{ text: 'Okay' }]);
         }
-    }, [createOrderHttpState]);
+    );
 
     const onCartItemRemove = (item: ExpandedCartItem) => {
         dispatch(CartActions.removeFromCart(item.productId));
@@ -64,7 +67,7 @@ const CartScreen = () => {
                     Total: <Text style={ styles.amount }>${ Math.round(+totalAmount.toFixed(2) * 100) / 100 }</Text>
                 </Text>
                 {
-                    createOrderHttpState.requestInProgress
+                    isShowLoader
                         ? <ActivityIndicator size="small" color={ COLORS.primary }/>
                         : <Button color={ COLORS.primary }
                                   title="Order Now"
