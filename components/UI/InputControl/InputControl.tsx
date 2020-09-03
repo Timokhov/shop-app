@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput, TextInputProps } from 'react-native';
+import { COLORS } from '../../../constants/colors';
 
 interface InputControlProps extends TextInputProps {
     label: string,
     value: string,
+    onValueChange: (newValue: string, isValid: boolean) => void,
     isValid: boolean,
     error: string,
-    onValueChange: (newValue: string, isValid: boolean) => void,
     required?: boolean,
     email?: boolean,
     minNumberValue?: number,
     maxNumberValue?: number,
     minLength?: number,
-
+    submitted?: boolean
 }
 
 const InputControl = (props: InputControlProps) => {
 
-    const [touched, setTouched] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const [blurred, setBlurred] = useState(false);
+
+    const toggleFocus = (focused: boolean) => {
+        setFocused(focused);
+        setBlurred(!focused);
+    };
 
     const textChangedHandler = (text: string) => {
         const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -40,17 +47,28 @@ const InputControl = (props: InputControlProps) => {
         props.onValueChange(text, isValid);
     };
 
+    const getInputColor = () => {
+        if (focused) {
+            return props.isValid ? COLORS.primary : COLORS.danger;
+        }
+
+        if (blurred || props.submitted) {
+            return props.isValid ? COLORS.common : COLORS.danger;
+        }
+    };
+
     return (
         <View style={ styles.inputControl }>
             <Text style={ styles.label }>{ props.label }</Text>
-            <TextInput style={ styles.input }
+            <TextInput style={{ ...styles.input, borderBottomColor: getInputColor() }}
                        { ...props }
                        value={ props.value }
-                       onBlur={ () => setTouched(true) }
+                       onFocus={ () => toggleFocus(true) }
+                       onBlur={ () => toggleFocus(false) }
                        onChangeText={ textChangedHandler }
             />
             {
-                !props.isValid && touched && (
+                !props.isValid && ( blurred || props.submitted) && (
                     <View style={ styles.errorContainer }>
                         <Text style={ styles.error }>{ props.error }</Text>
                     </View>
@@ -70,7 +88,6 @@ const styles = StyleSheet.create({
     },
     input: {
         padding: 5,
-        borderBottomColor: '#ccc',
         borderBottomWidth: 1
     },
     errorContainer: {
@@ -79,7 +96,7 @@ const styles = StyleSheet.create({
     error: {
         fontFamily: 'open-sans',
         fontSize: 13,
-        color: 'red'
+        color: COLORS.danger
     }
 });
 

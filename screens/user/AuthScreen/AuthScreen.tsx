@@ -49,7 +49,8 @@ const AuthScreen = () => {
                     isValid: false
                 }
             },
-            isValid: false
+            isValid: false,
+            submitted: false
         }
     );
     const dispatch: Dispatch<Action> = useDispatch();
@@ -60,6 +61,7 @@ const AuthScreen = () => {
 
     const onAuth = () => {
         Keyboard.dismiss();
+        dispatchFormState(FromStoreService.formSubmit());
         if (formState.isValid) {
             if (authMode === AuthMode.LOGIN) {
                 dispatch(AuthActions.login(formState.controls['email'].value, formState.controls['password'].value));
@@ -84,8 +86,9 @@ const AuthScreen = () => {
                                   onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('email', newValue, isValid) }
                                   isValid={ formState.controls['email'].isValid }
                                   error="Please enter valid email."
-                                  keyboardType="email-address"
                                   required
+                                  submitted={ formState.submitted }
+                                  keyboardType="email-address"
                                   email
                                   autoCapitalize="none"
                     />
@@ -94,9 +97,10 @@ const AuthScreen = () => {
                                   onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('password', newValue, isValid) }
                                   isValid={ formState.controls['password'].isValid }
                                   error="Please enter valid password."
+                                  required
+                                  submitted={ formState.submitted }
                                   keyboardType="default"
                                   secureTextEntry
-                                  required
                                   minLength={ 6 }
                                   autoCapitalize="none"
                     />
@@ -107,10 +111,16 @@ const AuthScreen = () => {
                                 : (
                                     <>
                                         <View style={ styles.buttonContainer }>
-                                            <Button title={ authMode === AuthMode.LOGIN ? "Login" : 'Sign Up' } onPress={ onAuth } color={ COLORS.primary }/>
+                                            <Button title={ authMode === AuthMode.LOGIN ? "Login" : 'Sign Up' }
+                                                    color={ COLORS.primary }
+                                                    onPress={ onAuth }
+                                            />
                                         </View>
                                         <View style={ styles.buttonContainer }>
-                                            <Button title={ `Switch To ${authMode === AuthMode.LOGIN ? "Sign Up" : 'Login'}` } onPress={ onAuthModeChange } color="#6e93d6"/>
+                                            <Button title={ `Switch To ${authMode === AuthMode.LOGIN ? "Sign Up" : 'Login'}` }
+                                                    color={ COLORS.second }
+                                                    onPress={ onAuthModeChange }
+                                            />
                                         </View>
                                     </>
                                 )

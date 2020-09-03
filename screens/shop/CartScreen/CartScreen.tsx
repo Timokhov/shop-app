@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         fontFamily: 'open-sans-bold'
     },
     amount: {
-        color: '#888'
+        color: COLORS.textHighlight
     }
 });
 

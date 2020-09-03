@@ -5,6 +5,7 @@ import { DrawerNavigatorItems } from 'react-navigation-drawer';
 import { DrawerNavigatorItemsProps } from 'react-navigation-drawer/lib/typescript/src/types';
 import { useDispatch } from 'react-redux';
 import { Action, Dispatch } from 'redux';
+import { COLORS } from '../../../constants/colors';
 import * as AuthActions from '../../../store/auth/auth.actions';
 
 const CustomDrawerNavigationItems = (props: DrawerNavigatorItemsProps) => {
@@ -19,7 +20,7 @@ const CustomDrawerNavigationItems = (props: DrawerNavigatorItemsProps) => {
         <SafeAreaView style={ styles.itemsContainer } forceInset={{ top: 'always', horizontal: 'never' }}>
             <DrawerNavigatorItems {...props}/>
             <View style={ styles.logoutButtonContainer }>
-                <Button title="Logout" color="#e35760" onPress={ onLogout }/>
+                <Button title="Logout" color={ COLORS.danger } onPress={ onLogout }/>
             </View>
         </SafeAreaView>
     );

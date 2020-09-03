@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableNativeFeedback, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../../../constants/colors';
 import { ExpandedCartItem } from '../../../models/cart-item';
 import { Nullable } from '../../../models/nullable';
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     quantity: {
         fontSize: 16,
         fontFamily: 'open-sans',
-        color: '#888',
+        color: COLORS.textHighlight,
         marginHorizontal: 5
     },
     title: {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'open-sans-bold',
         marginHorizontal: 10,
-        color: '#888'
+        color: COLORS.textHighlight
     },
     deleteIconContainer: {
         width: 30,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, TouchableNativeFeedback } from 'react-native';
+import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
 import Card from '../../UI/Card/Card';
 
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     },
     price: {
         fontSize: 14,
-        color: '#888',
+        color: COLORS.textHighlight,
         fontFamily: 'open-sans'
     },
     actionsContainer: {

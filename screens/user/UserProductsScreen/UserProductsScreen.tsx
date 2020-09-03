@@ -71,7 +71,7 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
                     onPress={ () => onEdit(itemInfo.item) }
             />
             <Button title="Delete"
-                    color="#e35760"
+                    color={ COLORS.danger }
                     onPress={ () => onDelete(itemInfo.item) }
             />
         </ProductInfo>

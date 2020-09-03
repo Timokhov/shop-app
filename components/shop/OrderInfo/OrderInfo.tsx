@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     totalAmount: {
         fontSize: 16,
         fontFamily: 'open-sans-bold',
-        color: '#888'
+        color: COLORS.textHighlight
     },
     date: {
         fontSize: 16,

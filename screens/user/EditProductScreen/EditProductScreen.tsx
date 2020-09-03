@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert, Keyboard } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,11 +65,14 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                     isValid: !!product
                 }
             },
-            isValid: !!product
+            isValid: !!product,
+            submitted: false
         }
     );
 
     const submitHandler = useCallback(() => {
+        Keyboard.dismiss();
+        dispatchFormState(FromStoreService.formSubmit());
         if (!createUpdateProductHttpState.requestInProgress) {
             if (!formState.isValid) {
                 Alert.alert(
@@ -115,57 +118,61 @@ const EditProductScreen = (props: EditProductScreenProps) => {
         return <ScreenLoader/>;
     } else {
         return (
-            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={ 100 }>
+            <KeyboardAvoidingView>
                 <ScrollView>
                     <View style={ styles.form }>
                         <InputControl label="Title"
+                                      value={ formState.controls['title'].value }
+                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid) }
+                                      isValid={ formState.controls['title'].isValid }
+                                      error="Please enter valid title."
+                                      required
+                                      submitted={ formState.submitted }
                                       keyboardType="default"
                                       autoCapitalize="sentences"
                                       autoCorrect
                                       returnKeyType="next"
-                                      value={ formState.controls['title'].value }
-                                      isValid={ formState.controls['title'].isValid }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid) }
-                                      required
-                                      error="Please enter valid title."
                         />
                         <InputControl label="Image Url"
+                                      value={ formState.controls['imageUrl'].value }
+                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('imageUrl', newValue, isValid) }
+                                      isValid={ formState.controls['imageUrl'].isValid }
+                                      error="Please enter valid image url."
+                                      required
+                                      submitted={ formState.submitted }
                                       keyboardType="default"
                                       returnKeyType="next"
-                                      value={ formState.controls['imageUrl'].value }
-                                      isValid={ formState.controls['imageUrl'].isValid }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('imageUrl', newValue, isValid)}
-                                      required
-                                      error="Please enter valid image url."
                         />
-
                         {
                             !product && (
                                 <InputControl label="Price"
+                                              value={ formState.controls['price'].value }
+                                              onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('price', newValue, isValid) }
+                                              isValid={ formState.controls['price'].isValid }
+                                              error="Please enter valid price."
+                                              required
+                                              submitted={ formState.submitted }
                                               keyboardType="decimal-pad"
                                               returnKeyType="next"
-                                              value={ formState.controls['price'].value }
-                                              isValid={ formState.controls['price'].isValid }
-                                              onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('price', newValue, isValid)}
-                                              required
                                               minNumberValue={ 0.1 }
-                                              error="Please enter valid price."
                                 />
                             )
                         }
                         <InputControl label="Description"
+                                      value={ formState.controls['description'].value }
+                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('description', newValue, isValid) }
+                                      isValid={ formState.controls['description'].isValid }
+                                      error="Please enter valid image description."
+                                      required
+                                      submitted={ formState.submitted }
                                       keyboardType="default"
                                       autoCapitalize="sentences"
                                       autoCorrect
                                       multiline
                                       numberOfLines={ 3 }
                                       returnKeyType="next"
-                                      value={ formState.controls['description'].value }
-                                      isValid={ formState.controls['description'].isValid }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('description', newValue, isValid)}
-                                      required
                                       minLength={ 5 }
-                                      error="Please enter valid image description."
+
                         />
                     </View>
                 </ScrollView>

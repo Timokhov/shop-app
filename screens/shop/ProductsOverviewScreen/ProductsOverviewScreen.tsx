@@ -63,17 +63,19 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     };
 
     const renderProduct = (itemInfo: ListRenderItemInfo<Product>): React.ReactElement => {
-        return <ProductInfo product={ itemInfo.item }
-                            onSelect={ onViewDetails }>
-            <Button title="View Details"
-                    color={ COLORS.primary }
-                    onPress={ () => onViewDetails(itemInfo.item) }
-            />
-            <Button title="Add to Cart"
-                    color={ COLORS.primary }
-                    onPress={ () => onAddToCart(itemInfo.item) }
-            />
-        </ProductInfo>
+        return (
+            <ProductInfo product={ itemInfo.item }
+                         onSelect={ onViewDetails }>
+                <Button title="View Details"
+                        color={ COLORS.primary }
+                        onPress={ () => onViewDetails(itemInfo.item) }
+                />
+                <Button title="Add to Cart"
+                        color={ COLORS.primary }
+                        onPress={ () => onAddToCart(itemInfo.item) }
+                />
+            </ProductInfo>
+        );
     };
 
     const refreshControl: React.ReactElement = (
