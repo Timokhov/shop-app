@@ -8,6 +8,7 @@ import InputControl from '../../../components/UI/InputControl/InputControl';
 import { COLORS } from '../../../constants/colors';
 import { usePreviousValue } from '../../../hooks/previousValue.hook';
 import { HttpState } from '../../../models/http-state';
+import { Nullable } from '../../../models/nullable';
 import * as FromStoreService from '../../../services/form-store/form-store.service'
 import * as AuthActions from'../../../store/auth/auth.actions';
 import { RootState } from '../../../store/store';
@@ -17,7 +18,7 @@ enum AuthMode{
     SIGN_UP
 }
 
-const AuthScreen = (props: NavigationStackScreenProps) => {
+const AuthScreen = () => {
 
     const [authMode, setAuthMode] = useState(AuthMode.LOGIN);
     const [isShowLoader, setShowLoader] = useState(false);
@@ -25,11 +26,8 @@ const AuthScreen = (props: NavigationStackScreenProps) => {
     const authHttpState: HttpState = useSelector(
         (state: RootState) => state.authState.authHttpState
     );
-    const isAuthenticated: boolean = useSelector(
-        (state: RootState) => state.authState.user.id !== null
-    );
 
-    const previousAuthHttpState: HttpState | undefined = usePreviousValue<HttpState>(authHttpState);
+    const previousAuthHttpState: Nullable<HttpState> = usePreviousValue<HttpState>(authHttpState);
     useEffect(() => {
         if (authHttpState.requestInProgress) {
             setShowLoader(true);
@@ -41,12 +39,6 @@ const AuthScreen = (props: NavigationStackScreenProps) => {
             }
         }
     }, [authHttpState]);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            props.navigation.navigate('Shop');
-        }
-    }, [isAuthenticated]);
 
     const [formState, dispatchFormState] = useReducer(
         FromStoreService.formReducer,

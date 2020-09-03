@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { COLORS } from '../../../constants/colors';
+import { Nullable } from '../../../models/nullable';
 import { Order } from '../../../models/order';
 import Card from '../../UI/Card/Card';
 import CartItemInfo from '../CartItemInfo/CartItemInfo';
@@ -17,7 +18,7 @@ const OrderInfo = (props: OrderInfoProps) => {
         setShowDetails(prevState => !prevState);
     };
 
-    let details: React.ReactElement | undefined;
+    let details: Nullable<React.ReactElement>;
     if (showDetails) {
         details = (
             <View style={ styles.detailsContainer }>

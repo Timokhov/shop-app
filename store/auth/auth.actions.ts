@@ -10,7 +10,12 @@ export enum AuthActionType {
     SIGN_UP = 'SIGN_UP',
     SIGN_UP_START = 'SIGN_UP_START',
     SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS',
-    SIGN_UP_FAIL = 'SIGN_UP_FAIL'
+    SIGN_UP_FAIL = 'SIGN_UP_FAIL',
+
+    CHECK_AUTH = 'CHECK_AUTH',
+
+    LOGOUT = 'LOGOUT',
+    CLEAR_AUTH = 'CLEAR_AUTH'
 }
 
 export interface AuthAction extends Action<AuthActionType> {}
@@ -94,5 +99,23 @@ export const signUpFail = (error: string): SignUpFailAction => {
     return {
         type: AuthActionType.SIGN_UP_FAIL,
         error: error
+    };
+};
+
+export const checkAuth = (): AuthAction => {
+    return {
+        type: AuthActionType.CHECK_AUTH
+    };
+};
+
+export const logout = (): AuthAction => {
+    return {
+        type: AuthActionType.LOGOUT
+    };
+};
+
+export const clearAuth = (): AuthAction => {
+    return {
+        type: AuthActionType.CLEAR_AUTH
     };
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableNativeFeedback, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ExpandedCartItem } from '../../../models/cart-item';
+import { Nullable } from '../../../models/nullable';
 
 interface CartItemInfoProps {
     item: ExpandedCartItem,
@@ -10,7 +11,7 @@ interface CartItemInfoProps {
 
 const CartItemInfo = (props: CartItemInfoProps) => {
 
-    let removeButton: React.ReactElement | undefined;
+    let removeButton: Nullable<React.ReactElement>;
     if (props.onRemove) {
         removeButton = (
             <TouchableNativeFeedback onPress={ () => props.onRemove && props.onRemove(props.item) }>

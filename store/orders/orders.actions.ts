@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { ExpandedCartItem } from '../../models/cart-item';
+import { Nullable } from '../../models/nullable';
 import { Order } from '../../models/order';
 import { User } from '../../models/user';
 
@@ -18,7 +19,7 @@ export enum OrdersActionType {
 export interface OrdersAction extends Action<OrdersActionType> {}
 
 export interface LoadOrdersAction extends OrdersAction {
-    user: User
+    user: Nullable<User>
 }
 
 export interface LoadOrdersSuccessAction extends OrdersAction {
@@ -32,7 +33,7 @@ export interface LoadOrdersFailAction extends OrdersAction {
 export interface CreateOrderAction extends OrdersAction {
     cartItems: ExpandedCartItem[],
     totalAmount: number,
-    user: User
+    user: Nullable<User>
 }
 
 export interface CreateOrderSuccessAction extends OrdersAction {
@@ -43,7 +44,7 @@ export interface CreateOrderFailAction extends OrdersAction {
     error: string
 }
 
-export const loadOrders = (user: User): LoadOrdersAction => {
+export const loadOrders = (user: Nullable<User>): LoadOrdersAction => {
     return {
         type: OrdersActionType.LOAD_ORDERS,
         user: user
@@ -70,7 +71,7 @@ export const loadOrdersFail = (error: string): LoadOrdersFailAction => {
     };
 };
 
-export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number, user: User): CreateOrderAction => {
+export const createOrder = (cartItems: ExpandedCartItem[], totalAmount: number, user: Nullable<User>): CreateOrderAction => {
     return {
         type: OrdersActionType.CREATE_ORDER,
         cartItems: cartItems,

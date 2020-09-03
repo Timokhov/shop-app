@@ -4,11 +4,13 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { DrawerIconProps } from 'react-navigation-drawer/src/types';
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
+import CustomDrawerNavigationItems from '../components/UI/CustomDrawerNavigationItems/CustomDrawerNavigationItems';
 import CartScreen from '../screens/shop/CartScreen/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen/OrdersScreen';
 import ProductDetailsScreen from '../screens/shop/ProductDetailsScreen/ProductDetailsScreen';
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen/ProductsOverviewScreen';
 import { COLORS } from '../constants/colors';
+import StartupScreen from '../screens/StartupScreen';
 import AuthScreen from '../screens/user/AuthScreen/AuthScreen';
 import EditProductScreen from '../screens/user/EditProductScreen/EditProductScreen';
 import UserProductsScreen from '../screens/user/UserProductsScreen/UserProductsScreen';
@@ -87,11 +89,13 @@ const ShopNavigator = createDrawerNavigator(
     {
         contentOptions: {
             activeTintColor: COLORS.primary
-        }
+        },
+        contentComponent: props => <CustomDrawerNavigationItems {...props}/>
     }
 );
 
 const MainNavigator = createSwitchNavigator({
+    Startup: StartupScreen,
     Auth: AuthNavigator,
     Shop: ShopNavigator
 });

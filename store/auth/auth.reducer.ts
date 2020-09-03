@@ -1,4 +1,5 @@
 import { HttpState } from '../../models/http-state';
+import { Nullable } from '../../models/nullable';
 import { User } from '../../models/user';
 import {
     AuthAction,
@@ -10,15 +11,12 @@ import {
 } from './auth.actions';
 
 export interface AuthState {
-    user: User,
+    user: Nullable<User>,
     authHttpState: HttpState
 }
 
 const initialState:AuthState = {
-    user: {
-        id: null,
-        token: null
-    },
+    user: null,
     authHttpState: {
         requestInProgress: false,
         error: ''

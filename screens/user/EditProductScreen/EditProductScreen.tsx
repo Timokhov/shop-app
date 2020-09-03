@@ -5,6 +5,7 @@ import { NavigationStackOptions, NavigationStackScreenProps } from 'react-naviga
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
 import InputControl from '../../../components/UI/InputControl/InputControl';
 import { User } from '../../../models/user';
@@ -24,13 +25,13 @@ const EditProductScreen = (props: EditProductScreenProps) => {
 
     const [isShowLoader, setShowLoader] = useState(false);
 
-    const user: User = useSelector(
+    const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
     );
     const createUpdateProductHttpState: HttpState = useSelector(
         (state: RootState) => state.productsState.createUpdateProductHttpState
     );
-    const previousCreateUpdateProductHttpState: HttpState | undefined = usePreviousValue<HttpState>(createUpdateProductHttpState);
+    const previousCreateUpdateProductHttpState: Nullable<HttpState> = usePreviousValue<HttpState>(createUpdateProductHttpState);
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {

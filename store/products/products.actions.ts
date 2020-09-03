@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { Nullable } from '../../models/nullable';
 import { Product } from '../../models/product';
 import { User } from '../../models/user';
 
@@ -29,7 +30,7 @@ export interface ProductsAction extends Action<ProductsActionType> {
 }
 
 export interface LoadProductsAction extends ProductsAction {
-    user: User
+    user: Nullable<User>
 }
 
 export interface LoadProductsSuccessAction extends ProductsAction {
@@ -46,7 +47,7 @@ export interface CreateProductAction extends ProductsAction {
     imageUrl: string,
     description: string,
     price: string,
-    user: User
+    user: Nullable<User>
 }
 
 export interface CreateProductSuccessAction extends ProductsAction {
@@ -62,7 +63,7 @@ export interface UpdateProductAction extends ProductsAction {
     title: string,
     imageUrl: string,
     description: string,
-    user: User
+    user: Nullable<User>
 }
 
 export interface UpdateProductSuccessAction extends ProductsAction {
@@ -78,14 +79,14 @@ export interface UpdateProductFailAction extends ProductsAction {
 
 export interface DeleteProductAction extends ProductsAction {
     productId: string,
-    user: User
+    user: Nullable<User>
 }
 
 export interface DeleteProductSuccessAction extends ProductsAction {
     productId: string
 }
 
-export const loadProducts = (user: User): LoadProductsAction => {
+export const loadProducts = (user: Nullable<User>): LoadProductsAction => {
     return {
         type: ProductsActionType.LOAD_PRODUCTS,
         user: user
@@ -113,7 +114,7 @@ export const loadProductsFail = (error: string): LoadProductsFailAction => {
     };
 };
 
-export const createProduct = (title: string, imageUrl: string, description: string, price: string, user: User): CreateProductAction => {
+export const createProduct = (title: string, imageUrl: string, description: string, price: string, user: Nullable<User>): CreateProductAction => {
     return {
         type: ProductsActionType.CREATE_PRODUCT,
         title: title,
@@ -144,7 +145,7 @@ export const createProductFail = (error: string): CreateProductFailAction => {
     };
 };
 
-export const updateProduct = (productId: string, title: string, imageUrl: string, description: string, user: User): UpdateProductAction => {
+export const updateProduct = (productId: string, title: string, imageUrl: string, description: string, user: Nullable<User>): UpdateProductAction => {
     return {
         type: ProductsActionType.UPDATE_PRODUCT,
         productId: productId,
@@ -178,7 +179,7 @@ export const updateProductFail = (error: string): UpdateProductFailAction => {
     };
 };
 
-export const deleteProduct = (productId: string, user: User): DeleteProductAction => {
+export const deleteProduct = (productId: string, user: Nullable<User>): DeleteProductAction => {
     return {
         type: ProductsActionType.DELETE_PRODUCT,
         productId: productId,

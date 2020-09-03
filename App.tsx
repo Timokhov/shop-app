@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import { StyleSheet } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { store } from './store/store';
 import AppNavigator from './navigation/AppNavigator';
+import * as NavigationService from './services/navigation/navigation.service';
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -23,11 +23,9 @@ const App = () => {
 
     return (
         <Provider store={store}>
-            <AppNavigator/>
+            <AppNavigator ref={ nav => NavigationService.init(nav) }/>
         </Provider>
     );
 };
-
-const styles = StyleSheet.create({});
 
 export default App;

@@ -2,7 +2,7 @@ import { createStore, combineReducers, Reducer, CombinedState, Store, applyMiddl
 import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { authReducer, AuthState } from './auth/auth.reducer';
-import { wathAuthSaga } from './auth/auth.saga';
+import { watchAuthSaga } from './auth/auth.saga';
 import cartReducer, { CartState } from './cart/cart.reducer';
 import { ordersReducer, OrdersState } from './orders/orders.reducer';
 import productsReducer, { ProductsState } from './products/products.reducer';
@@ -31,4 +31,4 @@ export const store: Store = createStore(rootReducer, applyMiddleware(sagaMiddlew
 
 sagaMiddleware.run(watchProductsSaga);
 sagaMiddleware.run(watchOrdersSaga);
-sagaMiddleware.run(wathAuthSaga);
+sagaMiddleware.run(watchAuthSaga);

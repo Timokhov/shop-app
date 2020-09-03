@@ -11,6 +11,7 @@ import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/Custom
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { COLORS } from '../../../constants/colors';
 import { HttpState } from '../../../models/http-state';
+import { Nullable } from '../../../models/nullable';
 import { Order } from '../../../models/order';
 import { User } from '../../../models/user';
 import * as OrdersActions from '../../../store/orders/orders.actions';
@@ -19,7 +20,7 @@ import Error from '../../../components/UI/Error/Error';
 
 const OrdersScreen = (props: NavigationDrawerScreenProps) => {
 
-    const user: User = useSelector(
+    const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
     );
     const orders: Order[] = useSelector(

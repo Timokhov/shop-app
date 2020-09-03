@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
     Button,
     FlatList,
     ListRenderItemInfo,
-    StyleSheet,
     RefreshControl
 } from 'react-native';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
@@ -11,6 +10,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackOptions } from 'react-navigation-stack';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { COLORS } from '../../../constants/colors';
+import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
 import { Dispatch, Action } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +26,7 @@ import { HttpState } from '../../../models/http-state';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 
-    const user: User = useSelector(
+    const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
     );
     const productList: Product[] = useSelector(

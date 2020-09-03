@@ -33,7 +33,7 @@ function* loadProductsSaga(action: LoadProductsAction) {
                 productData.price
             );
         });
-        const userProducts: Product[] = yield availableProducts.filter(product => product.ownerId === action.user.id);
+        const userProducts: Product[] = yield availableProducts.filter(product => product.ownerId === action.user?.id);
         yield put(ProductsActions.loadProductsSuccess(availableProducts, userProducts));
     } catch (error) {
         yield put(ProductsActions.loadProductsFail(error.message));
@@ -53,7 +53,7 @@ function* createProductSaga(action: CreateProductAction) {
         yield put(ProductsActions.createProductSuccess(
             new Product(
                 response.name,
-                action.user.id,
+                action.user?.id,
                 action.title,
                 action.imageUrl,
                 action.description,

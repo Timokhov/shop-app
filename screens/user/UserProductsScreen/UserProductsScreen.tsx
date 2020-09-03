@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, FlatList, ListRenderItemInfo, Alert, RefreshControl } from 'react-native';
 import { NavigationEventSubscription } from 'react-navigation';
 import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
@@ -11,6 +11,7 @@ import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/Custom
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { COLORS } from '../../../constants/colors';
 import { HttpState } from '../../../models/http-state';
+import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
 import { User } from '../../../models/user';
 import { RootState } from '../../../store/store';
@@ -19,7 +20,7 @@ import * as ProductsActions from '../../../store/products/products.actions';
 
 const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
 
-    const user: User = useSelector(
+    const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
     );
     const userProducts: Product[] = useSelector(

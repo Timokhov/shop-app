@@ -7,6 +7,7 @@ import CartItemInfo from '../../../components/shop/CartItemInfo/CartItemInfo';
 import Card from '../../../components/UI/Card/Card';
 import { COLORS } from '../../../constants/colors';
 import { ExpandedCartItem } from '../../../models/cart-item';
+import { Nullable } from '../../../models/nullable';
 import { User } from '../../../models/user';
 import { RootState } from '../../../store/store';
 import * as CartActions from '../../../store/cart/cart.actions';
@@ -16,7 +17,7 @@ import { usePreviousValue } from '../../../hooks/previousValue.hook';
 
 const CartScreen = () => {
 
-    const user: User = useSelector(
+    const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
     );
     const totalAmount: number = useSelector(
@@ -32,7 +33,7 @@ const CartScreen = () => {
     const createOrderHttpState: HttpState = useSelector(
         (state: RootState) => state.ordersState.createOrderHttpState
     );
-    const previousCreateOrderHttpState: HttpState | undefined = usePreviousValue<HttpState>(createOrderHttpState);
+    const previousCreateOrderHttpState: Nullable<HttpState> = usePreviousValue<HttpState>(createOrderHttpState);
     const dispatch: Dispatch<Action> = useDispatch();
 
     useEffect(() => {
