@@ -1,13 +1,12 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, Button, StyleSheet } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackScreenProps, NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch } from 'react-redux';
 import { Action, Dispatch } from 'redux';
-import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
 import * as CartActions from '../../../store/cart/cart.actions';
+import CartHeaderButton from '../../../components/UI/CartHeaderButton/CartHeaderButton';
 
 interface ProductDetailsScreenProps extends NavigationStackScreenProps {
     product: Product
@@ -61,16 +60,7 @@ ProductDetailsScreen.navigationOptions = (props: NavigationStackScreenProps) => 
     const product: Product = props.navigation.getParam('product');
     return {
         headerTitle: product.title,
-        headerRight: () => {
-            return (
-                <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
-                    <Item title='Cart'
-                          iconName='ios-cart'
-                          onPress={ () => props.navigation.navigate('Cart') }
-                    />
-                </HeaderButtons>
-            );
-        }
+        headerRight: () => <CartHeaderButton onPress={ () => props.navigation.navigate('Cart') }/>
     } as NavigationStackOptions;
 };
 

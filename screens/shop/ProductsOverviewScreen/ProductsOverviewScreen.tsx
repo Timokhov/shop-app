@@ -23,6 +23,7 @@ import Error from '../../../components/UI/Error/Error';
 import { NavigationEventSubscription } from 'react-navigation';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
+import CartHeaderButton from '../../../components/UI/CartHeaderButton/CartHeaderButton';
 
 const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 
@@ -114,16 +115,7 @@ ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) 
                 </HeaderButtons>
             );
         },
-        headerRight: () => {
-            return (
-                <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
-                    <Item title='Cart'
-                          iconName='ios-cart'
-                          onPress={ () => props.navigation.navigate('Cart') }
-                    />
-                </HeaderButtons>
-            );
-        }
+        headerRight: () => <CartHeaderButton onPress={ () => props.navigation.navigate('Cart') }/>
     } as NavigationStackOptions;
 };
 
