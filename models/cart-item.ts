@@ -1,21 +1,9 @@
+import { Product } from './product';
+
 export class CartItem {
     constructor(
+        public product: Product,
         public quantity: number,
-        public price: number,
-        public title: string,
-        public sum: number,
+        public sum: number
     ) {}
-}
-
-export class ExpandedCartItem extends CartItem {
-    constructor(
-        public productId: string,
-        quantity: number,
-        price: number,
-        title: string,
-        sum: number,
-    ) {
-        super(quantity, price, title, sum);
-
-    }
 }

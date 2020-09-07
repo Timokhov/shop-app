@@ -1,4 +1,4 @@
-import { ExpandedCartItem } from './cart-item';
+import { CartItem } from './cart-item';
 
 export interface FirebaseNameResponse {
     name: string
@@ -13,7 +13,7 @@ export interface FirebaseProductData {
 }
 
 export interface FirebaseOrderData {
-    items: ExpandedCartItem[],
+    items: CartItem[],
     totalAmount: number,
     date: string
 }

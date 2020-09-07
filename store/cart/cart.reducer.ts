@@ -25,16 +25,14 @@ const onAddToCart = (state: CartState, action: AddToCartAction): CartState => {
 
     if (state.itemsMap[product.id]) {
         cartItem = new CartItem(
+            { ...product },
             state.itemsMap[product.id].quantity + 1,
-            state.itemsMap[product.id].price,
-            product.title,
             state.itemsMap[product.id].sum + product.price,
         );
     } else {
         cartItem = new CartItem(
+            { ...product },
             1,
-            product.price,
-            product.title,
             product.price
         );
     }
@@ -51,10 +49,9 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
     const updatedItemsMap: {[index: string]: CartItem} = { ...state.itemsMap };
     if (cartItemToDelete.quantity > 1) {
         updatedItemsMap[action.productId] = new CartItem(
+            { ...cartItemToDelete.product },
             cartItemToDelete.quantity - 1,
-            cartItemToDelete.price,
-            cartItemToDelete.title,
-            cartItemToDelete.sum - cartItemToDelete.price
+            cartItemToDelete.sum - cartItemToDelete.product.price
         );
     } else {
         delete updatedItemsMap[action.productId];
@@ -62,7 +59,7 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
     return {
         ...state,
         itemsMap: updatedItemsMap,
-        totalAmount: state.totalAmount - cartItemToDelete.price
+        totalAmount: state.totalAmount - cartItemToDelete.product.price
     }
 };
 

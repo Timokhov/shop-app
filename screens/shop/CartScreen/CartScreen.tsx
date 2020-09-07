@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Button, FlatList, Text, StyleSheet, ListRenderItemInfo, Alert, ActivityIndicator } from 'react-native';
-import { NavigationStackOptions } from 'react-navigation-stack';
+import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CartItemInfo from '../../../components/shop/CartItemInfo/CartItemInfo';
 import Card from '../../../components/UI/Card/Card';
 import { COLORS } from '../../../constants/colors';
 import { useHttpStateObserver } from '../../../hooks/httpStateObserver';
-import { ExpandedCartItem } from '../../../models/cart-item';
+import { CartItem } from '../../../models/cart-item';
 import { Nullable } from '../../../models/nullable';
 import { User } from '../../../models/user';
 import { RootState } from '../../../store/store';
@@ -15,7 +15,7 @@ import * as CartActions from '../../../store/cart/cart.actions';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { HttpState } from '../../../models/http-state';
 
-const CartScreen = () => {
+const CartScreen = (props: NavigationStackScreenProps) => {
 
     const [isShowLoader, setShowLoader] = useState(false);
 
@@ -25,10 +25,10 @@ const CartScreen = () => {
     const totalAmount: number = useSelector(
         (state: RootState) => state.cartState.totalAmount
     );
-    const itemsList: ExpandedCartItem[] = useSelector(
+    const itemsList: CartItem[] = useSelector(
         (state: RootState) => {
             return Object.keys(state.cartState.itemsMap).map(id => {
-                return { ...state.cartState.itemsMap[id], productId: id }
+                return { ...state.cartState.itemsMap[id] };
             });
         }
     );
@@ -48,23 +48,32 @@ const CartScreen = () => {
         }
     );
 
-    const onCartItemRemove = (item: ExpandedCartItem) => {
-        dispatch(CartActions.removeFromCart(item.productId));
+    const onCartItemSelect = (item: CartItem) => {
+        props.navigation.navigate('ProductDetails', { product: item.product });
+    };
+
+    const onCartItemRemove = (item: CartItem) => {
+        dispatch(CartActions.removeFromCart(item.product.id));
     };
 
     const onOrderNow = () => {
         dispatch(OrdersActions.createOrder(itemsList, totalAmount, user));
     };
 
-    const renderCartItem = (itemInfo: ListRenderItemInfo<ExpandedCartItem>): React.ReactElement => {
-        return <CartItemInfo item={ itemInfo.item } onRemove={ onCartItemRemove }/>
+    const renderCartItem = (itemInfo: ListRenderItemInfo<CartItem>): React.ReactElement => {
+        return <CartItemInfo item={ itemInfo.item }
+                             onSelect={ onCartItemSelect }
+                             onRemove={ onCartItemRemove }
+        />
     };
 
     return (
         <View style={ styles.screen }>
             <Card style={ styles.summary }>
                 <Text style={ styles.summaryText }>
-                    Total: <Text style={ styles.amount }>${ Math.round(+totalAmount.toFixed(2) * 100) / 100 }</Text>
+                    Total: <Text style={ styles.amount }>
+                                ${ Math.round(+totalAmount.toFixed(2) * 100) / 100 }
+                           </Text>
                 </Text>
                 {
                     isShowLoader
@@ -76,15 +85,19 @@ const CartScreen = () => {
                         />
                 }
             </Card>
-           <FlatList data={ itemsList } renderItem={ renderCartItem } keyExtractor={ item => item.productId }/>
+           <FlatList data={ itemsList }
+                     renderItem={ renderCartItem }
+                     keyExtractor={ item => item.product.id }
+           />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     screen: {
+        flex: 1,
         padding: 10,
-        margin: 20
+        paddingBottom: 0
     },
     summary: {
         flexDirection: 'row',

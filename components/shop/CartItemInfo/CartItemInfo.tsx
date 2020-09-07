@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, TouchableNativeFeedback, StyleSheet } from 'react-native';
+import { View, Text, TouchableNativeFeedback, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../constants/colors';
-import { ExpandedCartItem } from '../../../models/cart-item';
+import { CartItem } from '../../../models/cart-item';
 import { Nullable } from '../../../models/nullable';
+import Card from '../../UI/Card/Card';
 
 interface CartItemInfoProps {
-    item: ExpandedCartItem,
-    onRemove?: (item: ExpandedCartItem) => void
+    item: CartItem,
+    onSelect?: (item: CartItem) => void,
+    onRemove?: (item: CartItem) => void
 }
 
 const CartItemInfo = (props: CartItemInfoProps) => {
@@ -24,54 +26,55 @@ const CartItemInfo = (props: CartItemInfoProps) => {
     }
 
     return (
-        <View style={ styles.cartItemInfo }>
-            <View style={ styles.itemData }>
-                <Text style={ styles.quantity }>{ props.item.quantity }</Text>
-                <Text style={ styles.title }>
-                    {
-                        props.item.title.length > 22
-                            ? props.item.title.substring(0, 19) + '...'
-                            : props.item.title
-                    }
-                </Text>
-            </View>
-            <View style={ styles.itemData }>
-                <Text style={ styles.amount }>${ props.item.sum.toFixed(2) }</Text>
-                { removeButton }
-            </View>
-        </View>
+        <Card style={ styles.cartItemInfo }>
+            <TouchableNativeFeedback onPress={ () => props.onSelect && props.onSelect(props.item) } useForeground>
+                <View style={ styles.dataContainer }>
+                    <Image style={ styles.image } source={{ uri: props.item.product.imageUrl }}/>
+                    <View style={ styles.details }>
+                        <Text style={ styles.title }>
+                            { props.item.product.title }
+                        </Text>
+                        <View>
+                            <Text style={ styles.detailsText }>Quantity: { props.item.quantity }</Text>
+                            <Text style={ styles.detailsText }>Total: ${ props.item.sum.toFixed(2) }</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableNativeFeedback>
+            { removeButton }
+        </Card>
     );
 };
 
 const styles = StyleSheet.create({
     cartItemInfo: {
-        marginVertical: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        margin: 10,
     },
-    itemData: {
+    dataContainer: {
         flexDirection: 'row',
-        alignItems: 'center'
+        flex: 6
     },
-    quantity: {
-        fontSize: 16,
-        fontFamily: 'open-sans',
-        color: COLORS.textHighlight,
-        marginHorizontal: 5
+    image: {
+        height: 110,
+        width: 110
+    },
+    details: {
+        flex: 1,
+        justifyContent: 'space-between',
+        padding: 5
     },
     title: {
-        fontSize: 16,
-        fontFamily: 'open-sans-bold',
-        marginHorizontal: 5
+        fontSize: 15,
+        fontFamily: 'open-sans-bold'
     },
-    amount: {
-        fontSize: 16,
+    detailsText: {
+        fontSize: 14,
         fontFamily: 'open-sans-bold',
-        marginHorizontal: 10,
         color: COLORS.textHighlight
     },
     deleteIconContainer: {
-        width: 30,
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     }

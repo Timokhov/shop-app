@@ -17,6 +17,8 @@ import { User } from '../../../models/user';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { RootState } from '../../../store/store';
 import Error from '../../../components/UI/Error/Error';
+import { CartItem } from '../../../models/cart-item';
+import { Product } from '../../../models/product';
 
 const OrdersScreen = (props: NavigationDrawerScreenProps) => {
 
@@ -48,8 +50,12 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
         dispatch(OrdersActions.loadOrders(user));
     };
 
+    const onSelectProduct = (product: Product) => {
+        props.navigation.navigate('ProductDetails', { product: product });
+    };
+
     const renderOrder = (itemInfo: ListRenderItemInfo<Order>): React.ReactElement => {
-        return <OrderInfo order={itemInfo.item}/>
+        return <OrderInfo order={itemInfo.item} onSelectProduct={ onSelectProduct }/>
     };
 
     const refreshControl: React.ReactElement = (

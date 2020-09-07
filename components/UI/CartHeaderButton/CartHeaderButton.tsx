@@ -37,7 +37,7 @@ const CartHeaderButton = (props: CartHeaderButtonProps) => {
             }
         </HeaderButtons>
     );
-}
+};
 
 const styles = StyleSheet.create({
     countBadge: {

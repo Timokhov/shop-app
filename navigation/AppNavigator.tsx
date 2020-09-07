@@ -44,7 +44,8 @@ const ProductsNavigator = createStackNavigator(
 
 const OrdersNavigator = createStackNavigator(
     {
-        Orders: OrdersScreen
+        Orders: OrdersScreen,
+        ProductDetails: ProductDetailsScreen
     },
     {
         navigationOptions: {

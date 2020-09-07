@@ -1,10 +1,10 @@
 import moment from 'moment';
-import { ExpandedCartItem } from './cart-item';
+import { CartItem } from './cart-item';
 
 export class Order {
     constructor(
         public id: string,
-        public items: ExpandedCartItem[],
+        public items: CartItem[],
         public totalAmount: number,
         public date: Date
     ) {}
