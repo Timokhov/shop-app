@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Button, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
 import { COLORS } from '../../../constants/colors';
 
-interface ErrorProps {
+interface ScreenErrorProps {
     message: string,
     onReload: () => void
 }
 
-const Error = (props: ErrorProps) => {
+const ScreenError = (props: ScreenErrorProps) => {
 
     const [isRefreshing, setRefreshing] = useState(false);
 
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Error;
+export default ScreenError;

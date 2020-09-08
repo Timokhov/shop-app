@@ -10,6 +10,7 @@ export const useHttpStateObserver = (
     onError?: (error: string) => void ) =>
 {
     const prevHttpState: Nullable<HttpState> = usePreviousValue(httpState);
+
     useEffect(() => {
         if (!prevHttpState?.requestInProgress && httpState.requestInProgress) {
             onStart && onStart();

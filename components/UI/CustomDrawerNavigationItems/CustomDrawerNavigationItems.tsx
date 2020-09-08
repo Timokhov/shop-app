@@ -18,7 +18,7 @@ const CustomDrawerNavigationItems = (props: DrawerNavigatorItemsProps) => {
 
     return (
         <SafeAreaView style={ styles.itemsContainer } forceInset={{ top: 'always', horizontal: 'never' }}>
-            <DrawerNavigatorItems {...props}/>
+            <DrawerNavigatorItems { ...props }/>
             <View style={ styles.logoutButtonContainer }>
                 <Button title="Logout" color={ COLORS.danger } onPress={ onLogout }/>
             </View>

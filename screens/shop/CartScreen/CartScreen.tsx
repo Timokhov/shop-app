@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Button, FlatList, Text, StyleSheet, ListRenderItemInfo, Alert, ActivityIndicator } from 'react-native';
+import {
+    View,
+    Button,
+    FlatList,
+    Text,
+    StyleSheet,
+    ListRenderItemInfo,
+    Alert,
+    ActivityIndicator
+} from 'react-native';
 import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';

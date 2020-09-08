@@ -19,7 +19,7 @@ import * as CartActions from '../../../store/cart/cart.actions';
 import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
-import Error from '../../../components/UI/Error/Error';
+import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import { NavigationEventSubscription } from 'react-navigation';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
@@ -89,9 +89,9 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     if (loadProductsHttpState.requestInProgress) {
         return <ScreenLoader/>;
     } else if(loadProductsHttpState.error) {
-        return <Error message={ loadProductsHttpState.error } onReload={ onRefresh }/>;
+        return <ScreenError message={ loadProductsHttpState.error } onReload={ onRefresh }/>;
     } else if(!productList || productList.length === 0) {
-        return <Error message="No products found." onReload={ onRefresh }/>;
+        return <ScreenError message="No products found." onReload={ onRefresh }/>;
     } else {
         return (
             <FlatList data={ productList } 

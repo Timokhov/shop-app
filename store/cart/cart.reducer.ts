@@ -1,5 +1,6 @@
 import { CartItem } from '../../models/cart-item';
 import { Product } from '../../models/product';
+import { AuthAction, AuthActionType } from '../auth/auth.actions';
 import {
     AddToCartAction,
     CartAction,
@@ -24,22 +25,25 @@ const onAddToCart = (state: CartState, action: AddToCartAction): CartState => {
     let cartItem: CartItem;
 
     if (state.itemsMap[product.id]) {
-        cartItem = new CartItem(
-            { ...product },
-            state.itemsMap[product.id].quantity + 1,
-            state.itemsMap[product.id].sum + product.price,
-        );
+        cartItem = {
+            product: { ...product },
+            quantity: state.itemsMap[product.id].quantity + 1,
+            sum: state.itemsMap[product.id].sum + product.price,
+        };
     } else {
-        cartItem = new CartItem(
-            { ...product },
-            1,
-            product.price
-        );
+        cartItem = {
+            product: { ...product },
+            quantity: 1,
+            sum: product.price
+        };
     }
+
+    const updatedItemMap: {[index: string]: CartItem} = { ...state.itemsMap };
+    updatedItemMap[product.id] = cartItem;
 
     return {
         ...state,
-        itemsMap: { ...state.itemsMap, [product.id]: cartItem },
+        itemsMap: updatedItemMap,
         totalAmount: state.totalAmount + product.price
     };
 };
@@ -48,11 +52,11 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
     const cartItemToDelete: CartItem = state.itemsMap[action.productId];
     const updatedItemsMap: {[index: string]: CartItem} = { ...state.itemsMap };
     if (cartItemToDelete.quantity > 1) {
-        updatedItemsMap[action.productId] = new CartItem(
-            { ...cartItemToDelete.product },
-            cartItemToDelete.quantity - 1,
-            cartItemToDelete.sum - cartItemToDelete.product.price
-        );
+        updatedItemsMap[action.productId] = {
+            product: { ...cartItemToDelete.product },
+            quantity: cartItemToDelete.quantity - 1,
+            sum: cartItemToDelete.sum - cartItemToDelete.product.price
+        };
     } else {
         delete updatedItemsMap[action.productId];
     }
@@ -61,10 +65,6 @@ const onRemoveFromCart = (state: CartState, action: RemoveFromCartAction): CartS
         itemsMap: updatedItemsMap,
         totalAmount: state.totalAmount - cartItemToDelete.product.price
     }
-};
-
-const onCreateOrderSuccess = (): CartState => {
-    return initialState;
 };
 
 const onDeleteProduct = (state: CartState, action: DeleteProductAction): CartState => {
@@ -82,16 +82,17 @@ const onDeleteProduct = (state: CartState, action: DeleteProductAction): CartSta
     }
 };
 
-const cartReducer = (state: CartState = initialState, action: CartAction | OrdersAction | ProductsAction): CartState => {
+const cartReducer = (state: CartState = initialState, action: CartAction | OrdersAction | ProductsAction | AuthAction): CartState => {
     switch (action.type) {
         case CartActionType.ADD_TO_CART:
             return onAddToCart(state, action as AddToCartAction);
         case CartActionType.REMOVE_FROM_CART:
             return onRemoveFromCart(state, action as RemoveFromCartAction);
-        case OrdersActionType.CREATE_ORDER_SUCCESS:
-            return onCreateOrderSuccess();
         case ProductsActionType.DELETE_PRODUCT:
             return onDeleteProduct(state, action as DeleteProductAction);
+        case OrdersActionType.CREATE_ORDER_SUCCESS:
+        case AuthActionType.CLEAR_AUTH:
+            return initialState;
         default:
             return state;
     }

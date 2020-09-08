@@ -16,8 +16,7 @@ import { Order } from '../../../models/order';
 import { User } from '../../../models/user';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { RootState } from '../../../store/store';
-import Error from '../../../components/UI/Error/Error';
-import { CartItem } from '../../../models/cart-item';
+import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import { Product } from '../../../models/product';
 
 const OrdersScreen = (props: NavigationDrawerScreenProps) => {
@@ -68,9 +67,9 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
     if (loadOrdersHttpState.requestInProgress) {
         return <ScreenLoader/>
     } else if (loadOrdersHttpState.error) {
-        return <Error message={ loadOrdersHttpState.error } onReload={ onRefresh }/>;
+        return <ScreenError message={ loadOrdersHttpState.error } onReload={ onRefresh }/>;
     } else if (!orders || orders.length === 0) {
-        return <Error message="No orders found."  onReload={ onRefresh }/>;
+        return <ScreenError message="No orders found." onReload={ onRefresh }/>;
     } else {
         return (
             <FlatList data={ orders }

@@ -28,7 +28,9 @@ const OrderInfo = (props: OrderInfoProps) => {
                     props.order.items.map(cartItem => {
                         return <CartItemInfo key={ cartItem.product.id }
                                              item={ cartItem }
-                                             onSelect={ () => props.onSelectProduct && props.onSelectProduct(cartItem.product) }
+                                             onSelect={ () => props.onSelectProduct
+                                                 && props.onSelectProduct(cartItem.product)
+                                             }
                         />
                     })
                 }
