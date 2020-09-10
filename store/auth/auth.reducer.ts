@@ -85,6 +85,10 @@ const onSignUpFail = (state: AuthState, action: SignUpFailAction): AuthState => 
     };
 };
 
+const onClearAuth = (state: AuthState, action: AuthAction): AuthState => {
+    return initialState;
+};
+
 export const authReducer = (state: AuthState = initialState, action: AuthAction): AuthState => {
     switch (action.type) {
         case AuthActionType.LOGIN_START:
@@ -99,6 +103,8 @@ export const authReducer = (state: AuthState = initialState, action: AuthAction)
             return onSignUpSuccess(state, action as SignUpSuccessAction);
         case AuthActionType.SIGN_UP_FAIL:
             return onSignUpFail(state, action as SignUpFailAction);
+        case AuthActionType.CLEAR_AUTH:
+            return onClearAuth(state, action);
         default:
             return state;
     }
