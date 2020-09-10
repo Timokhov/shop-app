@@ -13,6 +13,7 @@ export enum AuthActionType {
     SIGN_UP_FAIL = 'SIGN_UP_FAIL',
 
     CHECK_AUTH = 'CHECK_AUTH',
+    AUTH_CHECKED = 'AUTH_CHECKED',
 
     LOGOUT = 'LOGOUT',
     CLEAR_AUTH = 'CLEAR_AUTH'
@@ -105,6 +106,12 @@ export const signUpFail = (error: string): SignUpFailAction => {
 export const checkAuth = (): AuthAction => {
     return {
         type: AuthActionType.CHECK_AUTH
+    };
+};
+
+export const authChecked = (): AuthAction => {
+    return {
+        type: AuthActionType.AUTH_CHECKED
     };
 };
 

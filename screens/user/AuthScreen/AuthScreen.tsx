@@ -1,6 +1,6 @@
+import { StackNavigationOptions } from '@react-navigation/stack/lib/typescript/src/types';
 import React, { useReducer, useState } from 'react';
 import { View, ScrollView, StyleSheet, Button, ActivityIndicator, Alert, Keyboard } from 'react-native';
-import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import Card from '../../../components/UI/Card/Card';
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     }
 });
 
-AuthScreen.navigationOptions = {
+export const authScreenNavigationOptions = {
     headerTitle: 'Authentication'
-} as NavigationStackOptions;
+} as StackNavigationOptions;
 
 export default AuthScreen;

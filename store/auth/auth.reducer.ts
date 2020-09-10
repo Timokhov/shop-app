@@ -12,7 +12,8 @@ import {
 
 export interface AuthState {
     user: Nullable<User>,
-    authHttpState: HttpState
+    authHttpState: HttpState,
+    authChecked: boolean
 }
 
 const initialState:AuthState = {
@@ -20,7 +21,15 @@ const initialState:AuthState = {
     authHttpState: {
         requestInProgress: false,
         error: ''
-    }
+    },
+    authChecked: false
+};
+
+const onAuthChecked = (state: AuthState, action: AuthAction): AuthState => {
+    return {
+        ...state,
+        authChecked: true
+    };
 };
 
 const onLoginStart = (state: AuthState, action: AuthAction): AuthState => {
@@ -85,8 +94,17 @@ const onSignUpFail = (state: AuthState, action: SignUpFailAction): AuthState => 
     };
 };
 
+const onClearAuth = (state: AuthState, action: AuthAction): AuthState => {
+    return {
+        ...state,
+        user: null
+    };
+};
+
 export const authReducer = (state: AuthState = initialState, action: AuthAction): AuthState => {
     switch (action.type) {
+        case AuthActionType.AUTH_CHECKED:
+            return onAuthChecked(state, action);
         case AuthActionType.LOGIN_START:
             return onLoginStart(state, action);
         case AuthActionType.LOGIN_SUCCESS:
@@ -99,6 +117,8 @@ export const authReducer = (state: AuthState = initialState, action: AuthAction)
             return onSignUpSuccess(state, action as SignUpSuccessAction);
         case AuthActionType.SIGN_UP_FAIL:
             return onSignUpFail(state, action as SignUpFailAction);
+        case AuthActionType.CLEAR_AUTH:
+            return onClearAuth(state, action);
         default:
             return state;
     }

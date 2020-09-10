@@ -5,9 +5,9 @@ import {
     ListRenderItemInfo,
     RefreshControl
 } from 'react-native';
-import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { NavigationStackOptions } from 'react-navigation-stack';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { COLORS } from '../../../constants/colors';
 import { Nullable } from '../../../models/nullable';
@@ -15,17 +15,24 @@ import { Product } from '../../../models/product';
 import { Dispatch, Action } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../../../models/user';
+import { ProductsNavigatorParams } from '../../../navigation/AppNavigator';
 import * as CartActions from '../../../store/cart/cart.actions';
 import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
-import { NavigationEventSubscription } from 'react-navigation';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
 import CartHeaderButton from '../../../components/UI/CartHeaderButton/CartHeaderButton';
 
-const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
+type ProductsOverviewScreenStackNavigationProp = StackNavigationProp<ProductsNavigatorParams, 'ProductsOverview'>;
+type ProductsOverviewScreenRouteProp = RouteProp<ProductsNavigatorParams, 'ProductsOverview'>;
+type ProductsOverviewScreenProps = {
+    navigation: ProductsOverviewScreenStackNavigationProp,
+    route: ProductsOverviewScreenRouteProp
+};
+
+const ProductsOverviewScreen = (props: ProductsOverviewScreenProps) => {
 
     const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
@@ -40,15 +47,13 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
 
     useEffect(() => {
         dispatch(ProductsActions.loadProducts(user));
-        const willFocusSubscription: NavigationEventSubscription = props.navigation
+        const unsubscribeFunction = props.navigation
             .addListener(
-                'willFocus',
+                'focus',
                 () => dispatch(ProductsActions.loadProducts(user))
             );
 
-        return () => {
-            willFocusSubscription.remove();
-        }
+        return unsubscribeFunction;
     }, [dispatch]);
 
     const onRefresh = () => {
@@ -102,7 +107,7 @@ const ProductsOverviewScreen = (props: NavigationDrawerScreenProps) => {
     }
 };
 
-ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
+export const productsOverviewScreenNavigationOptions = (props: any) => {
     return {
         headerTitle: 'All Products',
         headerLeft: () => {
@@ -116,7 +121,7 @@ ProductsOverviewScreen.navigationOptions = (props: NavigationDrawerScreenProps) 
             );
         },
         headerRight: () => <CartHeaderButton onPress={ () => props.navigation.navigate('Cart') }/>
-    } as NavigationStackOptions;
+    } as StackNavigationOptions;
 };
 
 export default ProductsOverviewScreen;

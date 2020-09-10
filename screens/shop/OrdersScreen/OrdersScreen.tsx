@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
-import { NavigationEventSubscription } from 'react-navigation';
-import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import OrderInfo from '../../../components/shop/OrderInfo/OrderInfo';
@@ -14,12 +13,20 @@ import { HttpState } from '../../../models/http-state';
 import { Nullable } from '../../../models/nullable';
 import { Order } from '../../../models/order';
 import { User } from '../../../models/user';
+import { OrdersNavigatorParams } from '../../../navigation/AppNavigator';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { RootState } from '../../../store/store';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import { Product } from '../../../models/product';
 
-const OrdersScreen = (props: NavigationDrawerScreenProps) => {
+type OrdersScreenStackNavigationProp = StackNavigationProp<OrdersNavigatorParams, 'Orders'>;
+type OrdersScreenRouteProp = RouteProp<OrdersNavigatorParams, 'Orders'>;
+type OrdersScreenProps = {
+    navigation: OrdersScreenStackNavigationProp
+    route: OrdersScreenRouteProp
+};
+
+const OrdersScreen = (props: OrdersScreenProps) => {
 
     const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
@@ -34,15 +41,13 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
 
     useEffect(() => {
         dispatch(OrdersActions.loadOrders(user));
-        const willFocusSubscription: NavigationEventSubscription = props.navigation
+        const unsubscribeFunction = props.navigation
             .addListener(
-                'willFocus',
+                'focus',
                 () => dispatch(OrdersActions.loadOrders(user))
             );
 
-        return () => {
-            willFocusSubscription.remove();
-        }
+        return unsubscribeFunction;
     }, [dispatch]);
 
     const onRefresh = () => {
@@ -80,7 +85,7 @@ const OrdersScreen = (props: NavigationDrawerScreenProps) => {
     }
 };
 
-OrdersScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
+export const ordersScreenNavigationOptions  = (props: any) => {
     return {
         headerTitle: 'Your Orders',
         headerLeft: () => {
@@ -93,7 +98,7 @@ OrdersScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
                 </HeaderButtons>
             );
         }
-    } as NavigationStackOptions;
+    } as StackNavigationOptions;
 };
 
 export default OrdersScreen

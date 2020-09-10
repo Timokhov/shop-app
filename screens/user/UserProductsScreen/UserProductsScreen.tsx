@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Button, FlatList, ListRenderItemInfo, Alert, RefreshControl } from 'react-native';
-import { NavigationEventSubscription } from 'react-navigation';
-import { NavigationDrawerScreenProps } from 'react-navigation-drawer';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import ProductInfo from '../../../components/shop/ProductInfo/ProductInfo';
@@ -14,11 +13,19 @@ import { HttpState } from '../../../models/http-state';
 import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
 import { User } from '../../../models/user';
+import { AdminStackParams } from '../../../navigation/AppNavigator';
 import { RootState } from '../../../store/store';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import * as ProductsActions from '../../../store/products/products.actions';
 
-const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
+type UserProductsScreenStackNavigationProp = StackNavigationProp<AdminStackParams, 'UserProducts'>;
+type UserProductsScreenRouteProp = RouteProp<AdminStackParams, 'UserProducts'>;
+type UserProductsScreenStackProps = {
+    navigation: UserProductsScreenStackNavigationProp,
+    route: UserProductsScreenRouteProp
+};
+
+const UserProductsScreen = (props: UserProductsScreenStackProps) => {
 
     const user: Nullable<User> = useSelector(
         (state: RootState) => state.authState.user
@@ -33,15 +40,13 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
 
     useEffect(() => {
         dispatch(ProductsActions.loadProducts(user));
-        const willFocusSubscription: NavigationEventSubscription = props.navigation
+        const unsubscribeFunction = props.navigation
             .addListener(
-                'willFocus',
+                'focus',
                 () => dispatch(ProductsActions.loadProducts(user))
             );
 
-        return () => {
-            willFocusSubscription.remove();
-        }
+        return unsubscribeFunction;
     }, [dispatch]);
 
     const onRefresh = () => {
@@ -100,7 +105,7 @@ const UserProductsScreen = (props: NavigationDrawerScreenProps) => {
     }
 };
 
-UserProductsScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
+export const userProductsScreenNavigationOptions = (props: any) => {
     return {
         headerTitle: 'Your Products',
         headerLeft: () => {
@@ -123,7 +128,7 @@ UserProductsScreen.navigationOptions = (props: NavigationDrawerScreenProps) => {
                 </HeaderButtons>
             );
         }
-    } as NavigationStackOptions;
+    } as StackNavigationOptions;
 };
 
 export default UserProductsScreen;
