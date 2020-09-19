@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
 import { FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
@@ -18,6 +18,7 @@ import * as OrdersActions from '../../../store/orders/orders.actions';
 import { RootState } from '../../../store/store';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import { Product } from '../../../models/product';
+import { DrawerNavigationProps } from '../../../models/drawer-navigation-props';
 
 type OrdersScreenStackNavigationProp = StackNavigationProp<OrdersNavigatorParams, 'Orders'>;
 type OrdersScreenRouteProp = RouteProp<OrdersNavigatorParams, 'Orders'>;
@@ -38,20 +39,17 @@ const OrdersScreen = (props: OrdersScreenProps) => {
         (state: RootState) => state.ordersState.loadOrdersHttpState
     );
     const dispatch: Dispatch<Action> = useDispatch();
+    const dispatchLoadOrders = useCallback(() => {
+        dispatch(OrdersActions.loadOrders(user));
+    }, [dispatch, user]);
 
     useEffect(() => {
-        dispatch(OrdersActions.loadOrders(user));
-        const unsubscribeFunction = props.navigation
-            .addListener(
-                'focus',
-                () => dispatch(OrdersActions.loadOrders(user))
-            );
-
-        return unsubscribeFunction;
-    }, [dispatch]);
+        dispatchLoadOrders();
+        return props.navigation.addListener('focus', dispatchLoadOrders);
+    }, [dispatchLoadOrders]);
 
     const onRefresh = () => {
-        dispatch(OrdersActions.loadOrders(user));
+        dispatchLoadOrders();
     };
 
     const onSelectProduct = (product: Product) => {
@@ -65,27 +63,27 @@ const OrdersScreen = (props: OrdersScreenProps) => {
     const refreshControl: React.ReactElement = (
         <RefreshControl refreshing={ loadOrdersHttpState.requestInProgress }
                         onRefresh={ onRefresh }
-                        colors={ [COLORS.primary] }
-        />
+                        colors={ [COLORS.primary] }/>
     );
 
     if (loadOrdersHttpState.requestInProgress) {
         return <ScreenLoader/>
     } else if (loadOrdersHttpState.error) {
-        return <ScreenError message={ loadOrdersHttpState.error } onReload={ onRefresh }/>;
+        return <ScreenError message={ loadOrdersHttpState.error }
+                            onReload={ onRefresh }/>;
     } else if (!orders || orders.length === 0) {
-        return <ScreenError message="No orders found." onReload={ onRefresh }/>;
+        return <ScreenError message="No orders found."
+                            onReload={ onRefresh }/>;
     } else {
         return (
             <FlatList data={ orders }
                       renderItem={ renderOrder }
-                      refreshControl={ refreshControl }
-            />
+                      refreshControl={ refreshControl }/>
         );
     }
 };
 
-export const ordersScreenNavigationOptions  = (props: any) => {
+export const ordersScreenNavigationOptions  = (props: DrawerNavigationProps) => {
     return {
         headerTitle: 'Your Orders',
         headerLeft: () => {
@@ -93,12 +91,11 @@ export const ordersScreenNavigationOptions  = (props: any) => {
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
-                          onPress={ () => props.navigation.toggleDrawer() }
-                    />
+                          onPress={ () => props.navigation.toggleDrawer() }/>
                 </HeaderButtons>
             );
         }
     } as StackNavigationOptions;
 };
 
-export default OrdersScreen
+export default OrdersScreen;

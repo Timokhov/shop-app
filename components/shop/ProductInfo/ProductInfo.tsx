@@ -7,7 +7,7 @@ import Card from '../../UI/Card/Card';
 interface ProductItemProps {
     product: Product,
     onSelect: (product: Product) => void,
-    children: React.ReactNode,
+    children: React.ReactNode
 }
 
 const ProductInfo = (props: ProductItemProps) => {
@@ -17,8 +17,12 @@ const ProductInfo = (props: ProductItemProps) => {
                 <View>
                     <Image style={ styles.image } source={{ uri: props.product.imageUrl }}/>
                     <View style={ styles.details }>
-                        <Text style={ styles.title }>{ props.product.title }</Text>
-                        <Text style={ styles.price }>${ props.product.price.toFixed(2) }</Text>
+                        <Text style={ styles.title }>
+                            { props.product.title }
+                        </Text>
+                        <Text style={ styles.price }>
+                            ${ props.product.price.toFixed(2) }
+                        </Text>
                     </View>
                     <View style={ styles.actionsContainer }>
                         { props.children }

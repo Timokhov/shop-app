@@ -81,8 +81,7 @@ const CartScreen = (props: CartScreenProps) => {
     const renderCartItem = (itemInfo: ListRenderItemInfo<CartItem>): React.ReactElement => {
         return <CartItemInfo item={ itemInfo.item }
                              onSelect={ onCartItemSelect }
-                             onRemove={ onCartItemRemove }
-        />
+                             onRemove={ onCartItemRemove }/>
     };
 
     return (
@@ -99,14 +98,12 @@ const CartScreen = (props: CartScreenProps) => {
                         : <Button color={ COLORS.primary }
                                   title="Order Now"
                                   disabled={ itemsList.length === 0 }
-                                  onPress={ onOrderNow }
-                        />
+                                  onPress={ onOrderNow }/>
                 }
             </Card>
-           <FlatList data={ itemsList }
+            <FlatList data={ itemsList }
                      renderItem={ renderCartItem }
-                     keyExtractor={ item => item.product.id }
-           />
+                     keyExtractor={ item => item.product.id }/>
         </View>
     );
 };

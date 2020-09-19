@@ -35,8 +35,12 @@ const CartItemInfo = (props: CartItemInfoProps) => {
                             { props.item.product.title }
                         </Text>
                         <View>
-                            <Text style={ styles.detailsText }>Quantity: { props.item.quantity }</Text>
-                            <Text style={ styles.detailsText }>Total: ${ props.item.sum.toFixed(2) }</Text>
+                            <Text style={ styles.detailsText }>
+                                Quantity: { props.item.quantity }
+                            </Text>
+                            <Text style={ styles.detailsText }>
+                                Total: ${ props.item.sum.toFixed(2) }
+                            </Text>
                         </View>
                     </View>
                 </View>

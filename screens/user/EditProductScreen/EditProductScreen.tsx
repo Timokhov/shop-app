@@ -26,6 +26,7 @@ type EditProductScreenProps = {
 };
 
 const EditProductScreen = (props: EditProductScreenProps) => {
+
     const product: Nullable<Product> = props.route.params?.product;
 
     const [isShowLoader, setShowLoader] = useState(false);
@@ -118,8 +119,7 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                     <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                         <Item title='Save'
                               iconName='ios-checkmark'
-                              onPress={ submitHandler }
-                        />
+                              onPress={ submitHandler }/>
                     </HeaderButtons>
                 );
             }
@@ -139,7 +139,9 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                     <View style={ styles.form }>
                         <InputControl label="Title"
                                       value={ formState.controls['title'].value }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid) }
+                                      onValueChange={
+                                          (newValue: string, isValid: boolean) => onInputValueChange('title', newValue, isValid)
+                                      }
                                       isValid={ formState.controls['title'].isValid }
                                       error="Please enter valid title."
                                       required
@@ -147,36 +149,39 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                                       keyboardType="default"
                                       autoCapitalize="sentences"
                                       autoCorrect
-                                      returnKeyType="next"
-                        />
+                                      returnKeyType="next"/>
                         <InputControl label="Image Url"
                                       value={ formState.controls['imageUrl'].value }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('imageUrl', newValue, isValid) }
+                                      onValueChange={
+                                          (newValue: string, isValid: boolean) => onInputValueChange('imageUrl', newValue, isValid)
+                                      }
                                       isValid={ formState.controls['imageUrl'].isValid }
                                       error="Please enter valid image url."
                                       required
                                       submitted={ formState.submitted }
                                       keyboardType="default"
-                                      returnKeyType="next"
-                        />
+                                      returnKeyType="next"/>
                         {
                             !product && (
                                 <InputControl label="Price"
                                               value={ formState.controls['price'].value }
-                                              onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('price', newValue, isValid) }
+                                              onValueChange={
+                                                  (newValue: string, isValid: boolean) => onInputValueChange('price', newValue, isValid)
+                                              }
                                               isValid={ formState.controls['price'].isValid }
                                               error="Please enter valid price."
                                               required
                                               submitted={ formState.submitted }
                                               keyboardType="decimal-pad"
                                               returnKeyType="next"
-                                              minNumberValue={ 0.1 }
-                                />
+                                              minNumberValue={ 0.1 }/>
                             )
                         }
                         <InputControl label="Description"
                                       value={ formState.controls['description'].value }
-                                      onValueChange={ (newValue: string, isValid: boolean) => onInputValueChange('description', newValue, isValid) }
+                                      onValueChange={
+                                          (newValue: string, isValid: boolean) => onInputValueChange('description', newValue, isValid)
+                                      }
                                       isValid={ formState.controls['description'].isValid }
                                       error="Please enter valid image description."
                                       required
@@ -187,9 +192,7 @@ const EditProductScreen = (props: EditProductScreenProps) => {
                                       multiline
                                       numberOfLines={ 3 }
                                       returnKeyType="next"
-                                      minLength={ 5 }
-
-                        />
+                                      minLength={ 5 }/>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>

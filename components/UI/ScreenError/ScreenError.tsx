@@ -14,8 +14,7 @@ const ScreenError = (props: ScreenErrorProps) => {
     const refreshControl: React.ReactElement = (
         <RefreshControl refreshing={ isRefreshing }
                         onRefresh={ props.onReload }
-                        colors={ [COLORS.primary] }
-        />
+                        colors={ [COLORS.primary] }/>
     );
 
     return (

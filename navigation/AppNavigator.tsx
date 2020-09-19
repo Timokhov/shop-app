@@ -3,7 +3,7 @@ import { DrawerNavigationOptions } from '@react-navigation/drawer/lib/typescript
 import { StackNavigationOptions } from '@react-navigation/stack/lib/typescript/src/types';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useSelector } from 'react-redux';
 import CustomDrawerNavigationItems from '../components/UI/CustomDrawerNavigationItems/CustomDrawerNavigationItems';
@@ -83,7 +83,7 @@ const OrdersNavigator = () => {
 
 export type AdminStackParams = {
     UserProducts: undefined,
-    EditProduct: { product?: Product }
+    EditProduct: { product?: Product } | undefined
 }
 const AdminStackNavigator = createStackNavigator<AdminStackParams>();
 const AdminNavigator = () => {

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Button, FlatList, ListRenderItemInfo, Alert, RefreshControl } from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { Alert, Button, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -17,6 +17,7 @@ import { AdminStackParams } from '../../../navigation/AppNavigator';
 import { RootState } from '../../../store/store';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import * as ProductsActions from '../../../store/products/products.actions';
+import { DrawerNavigationProps } from '../../../models/drawer-navigation-props';
 
 type UserProductsScreenStackNavigationProp = StackNavigationProp<AdminStackParams, 'UserProducts'>;
 type UserProductsScreenRouteProp = RouteProp<AdminStackParams, 'UserProducts'>;
@@ -36,21 +37,19 @@ const UserProductsScreen = (props: UserProductsScreenStackProps) => {
     const loadProductsHttpState: HttpState = useSelector(
         (state: RootState) => state.productsState.loadProductsHttpState
     );
+
     const dispatch: Dispatch<Action> = useDispatch();
+    const dispatchLoadProducts = useCallback(() => {
+        dispatch(ProductsActions.loadProducts(user));
+    }, [dispatch, user]);
 
     useEffect(() => {
-        dispatch(ProductsActions.loadProducts(user));
-        const unsubscribeFunction = props.navigation
-            .addListener(
-                'focus',
-                () => dispatch(ProductsActions.loadProducts(user))
-            );
-
-        return unsubscribeFunction;
-    }, [dispatch]);
+        dispatchLoadProducts();
+        return props.navigation.addListener('focus', dispatchLoadProducts);
+    }, [dispatchLoadProducts]);
 
     const onRefresh = () => {
-        dispatch(ProductsActions.loadProducts(user));
+        dispatchLoadProducts();
     };
 
     const onEdit = (product: Product) => {
@@ -69,43 +68,43 @@ const UserProductsScreen = (props: UserProductsScreenStackProps) => {
     };
 
     const renderProduct = (itemInfo: ListRenderItemInfo<Product>): React.ReactElement => {
-        return <ProductInfo product={ itemInfo.item }
-                            onSelect={ onEdit }>
-            <Button title="Edit"
-                    color={ COLORS.primary }
-                    onPress={ () => onEdit(itemInfo.item) }
-            />
-            <Button title="Delete"
-                    color={ COLORS.danger }
-                    onPress={ () => onDelete(itemInfo.item) }
-            />
-        </ProductInfo>
+        return (
+            <ProductInfo product={ itemInfo.item }
+                         onSelect={ onEdit }>
+                <Button title="Edit"
+                        color={ COLORS.primary }
+                        onPress={ () => onEdit(itemInfo.item) }/>
+                <Button title="Delete"
+                        color={ COLORS.danger }
+                        onPress={ () => onDelete(itemInfo.item) }/>
+            </ProductInfo>
+        );
     };
 
     const refreshControl: React.ReactElement = (
         <RefreshControl refreshing={ loadProductsHttpState.requestInProgress }
                         onRefresh={ onRefresh }
-                        colors={ [COLORS.primary] }
-        />
+                        colors={ [COLORS.primary] }/>
     );
 
     if (loadProductsHttpState.requestInProgress) {
         return <ScreenLoader/>;
     } else if (loadProductsHttpState.error) {
-        return <ScreenError message={ loadProductsHttpState.error } onReload={ onRefresh }/>;
+        return <ScreenError message={ loadProductsHttpState.error }
+                            onReload={ onRefresh }/>;
     } else if (!userProducts || userProducts.length === 0) {
-        return <ScreenError message="No products found." onReload={ onRefresh }/>;
+        return <ScreenError message="No products found."
+                            onReload={ onRefresh }/>;
     } else {
         return (
             <FlatList data={ userProducts }
                       renderItem={ renderProduct }
-                      refreshControl={ refreshControl }
-            />
+                      refreshControl={ refreshControl }/>
         );
     }
 };
 
-export const userProductsScreenNavigationOptions = (props: any) => {
+export const userProductsScreenNavigationOptions = (props: DrawerNavigationProps) => {
     return {
         headerTitle: 'Your Products',
         headerLeft: () => {
@@ -113,8 +112,7 @@ export const userProductsScreenNavigationOptions = (props: any) => {
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
-                          onPress={ () => props.navigation.toggleDrawer() }
-                    />
+                          onPress={ () => props.navigation.toggleDrawer() }/>
                 </HeaderButtons>
             );
         },
@@ -123,8 +121,7 @@ export const userProductsScreenNavigationOptions = (props: any) => {
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Add'
                           iconName='ios-create'
-                          onPress={ () => props.navigation.navigate('EditProduct') }
-                    />
+                          onPress={ () => props.navigation.navigate('EditProduct') }/>
                 </HeaderButtons>
             );
         }

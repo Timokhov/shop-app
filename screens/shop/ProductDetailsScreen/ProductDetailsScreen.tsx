@@ -18,6 +18,7 @@ type ProductDetailsScreenProps = {
 };
 
 const ProductDetailsScreen = (props: ProductDetailsScreenProps) => {
+
     const product: Product = props.route.params.product;
     const dispatch: Dispatch<Action> = useDispatch();
 
@@ -31,8 +32,12 @@ const ProductDetailsScreen = (props: ProductDetailsScreenProps) => {
             <View style={ styles.actionsContainer }>
                 <Button color={ COLORS.primary } title="Add To Cart" onPress={ onAddToCart }/>
             </View>
-            <Text style={ styles.price }>${ product.price.toFixed(2) }</Text>
-            <Text style={ styles.description }>{ product.description }</Text>
+            <Text style={ styles.price }>
+                ${ product.price.toFixed(2) }
+            </Text>
+            <Text style={ styles.description }>
+                { product.description }
+            </Text>
         </ScrollView>
     );
 };

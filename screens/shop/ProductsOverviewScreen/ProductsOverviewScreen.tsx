@@ -1,10 +1,5 @@
-import React, { useEffect } from 'react';
-import {
-    Button,
-    FlatList,
-    ListRenderItemInfo,
-    RefreshControl
-} from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { Button, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -12,7 +7,7 @@ import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/Custom
 import { COLORS } from '../../../constants/colors';
 import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
-import { Dispatch, Action } from 'redux'
+import { Action, Dispatch } from 'redux'
 import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../../../models/user';
 import { ProductsNavigatorParams } from '../../../navigation/AppNavigator';
@@ -24,6 +19,7 @@ import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
 import CartHeaderButton from '../../../components/UI/CartHeaderButton/CartHeaderButton';
+import { DrawerNavigationProps } from '../../../models/drawer-navigation-props';
 
 type ProductsOverviewScreenStackNavigationProp = StackNavigationProp<ProductsNavigatorParams, 'ProductsOverview'>;
 type ProductsOverviewScreenRouteProp = RouteProp<ProductsNavigatorParams, 'ProductsOverview'>;
@@ -44,20 +40,17 @@ const ProductsOverviewScreen = (props: ProductsOverviewScreenProps) => {
         (state: RootState) => state.productsState.loadProductsHttpState
     );
     const dispatch: Dispatch<Action> = useDispatch();
+    const dispatchLoadProducts = useCallback(() => {
+        dispatch(ProductsActions.loadProducts(user));
+    }, [user, dispatch]);
 
     useEffect(() => {
-        dispatch(ProductsActions.loadProducts(user));
-        const unsubscribeFunction = props.navigation
-            .addListener(
-                'focus',
-                () => dispatch(ProductsActions.loadProducts(user))
-            );
-
-        return unsubscribeFunction;
-    }, [dispatch]);
+        dispatchLoadProducts();
+        return props.navigation.addListener('focus', dispatchLoadProducts);
+    }, [dispatchLoadProducts]);
 
     const onRefresh = () => {
-        dispatch(ProductsActions.loadProducts(user));
+        dispatchLoadProducts();
     };
 
     const onViewDetails = (product: Product) => {
@@ -74,12 +67,10 @@ const ProductsOverviewScreen = (props: ProductsOverviewScreenProps) => {
                          onSelect={ onViewDetails }>
                 <Button title="View Details"
                         color={ COLORS.primary }
-                        onPress={ () => onViewDetails(itemInfo.item) }
-                />
+                        onPress={ () => onViewDetails(itemInfo.item) }/>
                 <Button title="Add to Cart"
                         color={ COLORS.primary }
-                        onPress={ () => onAddToCart(itemInfo.item) }
-                />
+                        onPress={ () => onAddToCart(itemInfo.item) }/>
             </ProductInfo>
         );
     };
@@ -87,27 +78,27 @@ const ProductsOverviewScreen = (props: ProductsOverviewScreenProps) => {
     const refreshControl: React.ReactElement = (
         <RefreshControl refreshing={ loadProductsHttpState.requestInProgress }
                         onRefresh={ onRefresh }
-                        colors={ [COLORS.primary] }
-        />
+                        colors={ [COLORS.primary] }/>
     );
 
     if (loadProductsHttpState.requestInProgress) {
         return <ScreenLoader/>;
     } else if(loadProductsHttpState.error) {
-        return <ScreenError message={ loadProductsHttpState.error } onReload={ onRefresh }/>;
+        return <ScreenError message={ loadProductsHttpState.error }
+                            onReload={ onRefresh }/>;
     } else if(!productList || productList.length === 0) {
-        return <ScreenError message="No products found." onReload={ onRefresh }/>;
+        return <ScreenError message="No products found."
+                            onReload={ onRefresh }/>;
     } else {
         return (
             <FlatList data={ productList } 
                       renderItem={ renderProduct } 
-                      refreshControl={ refreshControl }
-            />
+                      refreshControl={ refreshControl }/>
         );
     }
 };
 
-export const productsOverviewScreenNavigationOptions = (props: any) => {
+export const productsOverviewScreenNavigationOptions = (props: DrawerNavigationProps) => {
     return {
         headerTitle: 'All Products',
         headerLeft: () => {
@@ -115,8 +106,7 @@ export const productsOverviewScreenNavigationOptions = (props: any) => {
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
-                          onPress={ () => props.navigation.toggleDrawer() }
-                    />
+                          onPress={ () => props.navigation.toggleDrawer() }/>
                 </HeaderButtons>
             );
         },

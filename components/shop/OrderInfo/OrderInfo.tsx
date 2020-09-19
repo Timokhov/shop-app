@@ -42,13 +42,16 @@ const OrderInfo = (props: OrderInfoProps) => {
     return (
         <Card style={ styles.orderInfo }>
             <View style={ styles.summary }>
-                <Text style={ styles.totalAmount }>${ props.order.totalAmount.toFixed(2) }</Text>
-                <Text style={ styles.date }>{ props.order.dateString }</Text>
+                <Text style={ styles.totalAmount }>
+                    ${ props.order.totalAmount.toFixed(2) }
+                </Text>
+                <Text style={ styles.date }>
+                    { props.order.dateString }
+                </Text>
             </View>
             <Button title={ showDetails ? 'Hide Details' : 'Show Details' }
                     color={ COLORS.primary }
-                    onPress={ onToggleDetails }
-            />
+                    onPress={ onToggleDetails }/>
             { details }
         </Card>
     );
