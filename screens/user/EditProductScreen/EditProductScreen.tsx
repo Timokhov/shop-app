@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, KeyboardAvoidingView, ScrollView, StyleSheet, Alert, Keyboard } from 'react-native';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
@@ -10,18 +11,22 @@ import { Nullable } from '../../../models/nullable';
 import { Product } from '../../../models/product';
 import InputControl from '../../../components/UI/InputControl/InputControl';
 import { User } from '../../../models/user';
+import { AdminStackParams } from '../../../navigation/AppNavigator';
 import * as FromStoreService from '../../../services/form-store/form-store.service'
 import * as ProductsActions from '../../../store/products/products.actions';
 import { RootState } from '../../../store/store';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
 
-interface EditProductScreenProps extends NavigationStackScreenProps {
-    product: Product
-}
+type EditProductScreenStackNavigationProp = StackNavigationProp<AdminStackParams, 'EditProduct'>;
+type EditProductScreenRouteProp = RouteProp<AdminStackParams, 'EditProduct'>;
+type EditProductScreenProps = {
+    navigation: EditProductScreenStackNavigationProp,
+    route: EditProductScreenRouteProp
+};
 
 const EditProductScreen = (props: EditProductScreenProps) => {
-    const product: Product = props.navigation.getParam('product');
+    const product: Nullable<Product> = props.route.params?.product;
 
     const [isShowLoader, setShowLoader] = useState(false);
 
@@ -107,7 +112,18 @@ const EditProductScreen = (props: EditProductScreenProps) => {
     }, [product, formState, createUpdateProductHttpState]);
 
     useEffect(() => {
-        props.navigation.setParams({ submit: submitHandler });
+        props.navigation.setOptions({
+            headerRight: () => {
+                return (
+                    <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
+                        <Item title='Save'
+                              iconName='ios-checkmark'
+                              onPress={ submitHandler }
+                        />
+                    </HeaderButtons>
+                );
+            }
+        });
     }, [submitHandler]);
 
     const onInputValueChange = (inputId: string, newValue: string, isValid: boolean) => {
@@ -187,22 +203,11 @@ const styles = StyleSheet.create({
     }
 });
 
-EditProductScreen.navigationOptions = (props: NavigationStackScreenProps) => {
-    const product: Product = props.navigation.getParam('product');
-    const submit = props.navigation.getParam('submit');
+export const editProductScreenNavigationOptions = (props: EditProductScreenProps) => {
+    const product: Nullable<Product> = props.route.params?.product;
     return {
-        headerTitle: product ? 'Edit Product' : 'Add Product',
-        headerRight: () => {
-            return (
-                <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
-                    <Item title='Save'
-                          iconName='ios-checkmark'
-                          onPress={ submit }
-                    />
-                </HeaderButtons>
-            );
-        }
-    } as NavigationStackOptions;
+        headerTitle: product ? 'Edit Product' : 'Add Product'
+    } as StackNavigationOptions;
 };
 
 export default EditProductScreen;

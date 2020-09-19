@@ -1,19 +1,24 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, Button, StyleSheet } from 'react-native';
-import { NavigationStackScreenProps, NavigationStackOptions } from 'react-navigation-stack';
 import { useDispatch } from 'react-redux';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { Action, Dispatch } from 'redux';
 import { COLORS } from '../../../constants/colors';
 import { Product } from '../../../models/product';
+import { ProductsNavigatorParams } from '../../../navigation/AppNavigator';
 import * as CartActions from '../../../store/cart/cart.actions';
 import CartHeaderButton from '../../../components/UI/CartHeaderButton/CartHeaderButton';
 
-interface ProductDetailsScreenProps extends NavigationStackScreenProps {
-    product: Product
-}
+type ProductDetailsScreenStackNavigationProp = StackNavigationProp<ProductsNavigatorParams, 'ProductDetails'>;
+type ProductDetailsScreenRouteProp = RouteProp<ProductsNavigatorParams, 'ProductDetails'>;
+type ProductDetailsScreenProps = {
+    navigation: ProductDetailsScreenStackNavigationProp,
+    route: ProductDetailsScreenRouteProp
+};
 
 const ProductDetailsScreen = (props: ProductDetailsScreenProps) => {
-    const product: Product = props.navigation.getParam('product');
+    const product: Product = props.route.params.product;
     const dispatch: Dispatch<Action> = useDispatch();
 
     const onAddToCart = () => {
@@ -56,12 +61,12 @@ const styles = StyleSheet.create({
     }
 });
 
-ProductDetailsScreen.navigationOptions = (props: NavigationStackScreenProps) => {
-    const product: Product = props.navigation.getParam('product');
+export const productDetailsScreenNavigationOptions = (props: ProductDetailsScreenProps) => {
+    const product: Product = props.route.params.product;
     return {
         headerTitle: product.title,
         headerRight: () => <CartHeaderButton onPress={ () => props.navigation.navigate('Cart') }/>
-    } as NavigationStackOptions;
+    } as StackNavigationOptions;
 };
 
 export default ProductDetailsScreen;

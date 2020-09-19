@@ -9,8 +9,9 @@ import {
     Alert,
     ActivityIndicator
 } from 'react-native';
-import { NavigationStackOptions, NavigationStackScreenProps } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { Action, Dispatch } from 'redux';
 import CartItemInfo from '../../../components/shop/CartItemInfo/CartItemInfo';
 import Card from '../../../components/UI/Card/Card';
@@ -19,12 +20,20 @@ import { useHttpStateObserver } from '../../../hooks/httpStateObserver';
 import { CartItem } from '../../../models/cart-item';
 import { Nullable } from '../../../models/nullable';
 import { User } from '../../../models/user';
+import { ProductsNavigatorParams } from '../../../navigation/AppNavigator';
 import { RootState } from '../../../store/store';
 import * as CartActions from '../../../store/cart/cart.actions';
 import * as OrdersActions from '../../../store/orders/orders.actions';
 import { HttpState } from '../../../models/http-state';
 
-const CartScreen = (props: NavigationStackScreenProps) => {
+type CartScreenStackNavigationProp = StackNavigationProp<ProductsNavigatorParams, 'Cart'>;
+type CartScreenRouteProp = RouteProp<ProductsNavigatorParams, 'Cart'>;
+type CartScreenProps = {
+    navigation: CartScreenStackNavigationProp,
+    route: CartScreenRouteProp
+};
+
+const CartScreen = (props: CartScreenProps) => {
 
     const [isShowLoader, setShowLoader] = useState(false);
 
@@ -124,8 +133,9 @@ const styles = StyleSheet.create({
     }
 });
 
-CartScreen.navigationOptions = {
+export const cartScreenNavigationOptions = {
     headerTitle: 'Your Cart'
-} as NavigationStackOptions;
+} as StackNavigationOptions;
+
 
 export default CartScreen;

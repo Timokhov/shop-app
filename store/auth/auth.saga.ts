@@ -1,4 +1,4 @@
-import { put, takeEvery, call } from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FirebaseUserData } from '../../models/firebase';
 import { Nullable } from '../../models/nullable';
@@ -6,7 +6,6 @@ import { User } from '../../models/user';
 import { AuthActionType, LoginAction, SignUpAction } from './auth.actions';
 import * as AuthActions from './auth.actions';
 import * as AuthService from '../../services/auth/auth.service';
-import * as NavigationService from '../../services/navigation/navigation.service';
 
 export function* watchAuthSaga() {
     yield takeEvery(AuthActionType.LOGIN, loginSaga);
@@ -22,7 +21,6 @@ function* loginSaga(action: LoginAction) {
         const user: User = User.fromFirebaseUserData(userData);
         yield AsyncStorage.setItem('userData', JSON.stringify(user));
         yield put(AuthActions.loginSuccess(user));
-        yield call(() => NavigationService.navigate({ routeName: 'Shop' }));
     } catch (error) {
         yield put(AuthActions.loginFail(error.message));
     }
@@ -35,7 +33,6 @@ function* signUpSaga(action: SignUpAction) {
         const user: User = User.fromFirebaseUserData(userData);
         yield AsyncStorage.setItem('userData', JSON.stringify(user));
         yield put(AuthActions.signUpSuccess(user));
-        yield call(() => NavigationService.navigate({ routeName: 'Shop' }));
     } catch (error) {
         yield put(AuthActions.signUpFail(error.message));
     }
@@ -49,18 +46,14 @@ function* checkAuthSaga() {
         if (expirationDate <= new Date() || !user.id || !user.token) {
             yield AsyncStorage.removeItem('userData');
             yield put(AuthActions.clearAuth());
-            yield call(() => NavigationService.navigate({ routeName: 'Auth' }));
         } else {
-            yield call(() => NavigationService.navigate({ routeName: 'Shop' }));
             yield put(AuthActions.loginSuccess(user));
         }
-    } else {
-        yield call(() => NavigationService.navigate({ routeName: 'Auth' }));
     }
+    yield put(AuthActions.authChecked());
 }
 
 function* logoutSaga() {
     yield AsyncStorage.removeItem('userData');
     yield put(AuthActions.clearAuth());
-    yield call(() => NavigationService.navigate({ routeName: 'Auth' }));
 }
