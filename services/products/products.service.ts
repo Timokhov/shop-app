@@ -19,7 +19,10 @@ export const loadProducts = (): Promise<FirebaseProductsResponse> => {
         });
 };
 
-export const createProduct = (title: string, imageUrl: string, description: string, price: number, user: Nullable<User>): Promise<FirebaseNameResponse> => {
+export const createProduct = (title: string, imageUrl: string,
+                              description: string, price: number,
+                              user: Nullable<User>, ownerPushToken: Nullable<string>): Promise<FirebaseNameResponse> =>
+{
     return fetch(
         `https://shop-app-72e31.firebaseio.com/products.json?auth=${user?.token}`,
         {
@@ -29,6 +32,7 @@ export const createProduct = (title: string, imageUrl: string, description: stri
             },
             body: JSON.stringify({
                 ownerId: user?.id,
+                ownerPushToken,
                 title,
                 imageUrl,
                 description,

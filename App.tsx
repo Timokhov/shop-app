@@ -4,6 +4,17 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { store } from './store/store';
 import AppNavigator from './navigation/AppNavigator';
+import * as ExpoNotifications from 'expo-notifications';
+import { NotificationBehavior } from 'expo-notifications/src/Notifications.types';
+
+ExpoNotifications.setNotificationHandler({
+    handleNotification: async () => {
+        return {
+            shouldShowAlert: true,
+            shouldPlaySound: true
+        } as NotificationBehavior
+    }
+});
 
 const fetchFonts = () => {
     return Font.loadAsync({

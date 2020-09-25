@@ -110,6 +110,7 @@ const onUpdateProductSuccess = (state: ProductsState, action: UpdateProductSucce
     const updatedProduct: Product = new Product(
         action.productId,
         state.userProducts[userProductIndex].ownerId,
+        state.userProducts[userProductIndex].ownerPushToken,
         action.title,
         action.imageUrl,
         action.description,

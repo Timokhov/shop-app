@@ -10,6 +10,11 @@ import * as ProductsActions from './products.actions';
 import * as ProductsService from '../../services/products/products.service';
 import { Product } from '../../models/product';
 import { FirebaseNameResponse, FirebaseProductData, FirebaseProductsResponse } from '../../models/firebase';
+import * as ExpoNotifications from 'expo-notifications';
+import * as ExpoPermissions from 'expo-permissions';
+import { PermissionResponse, PermissionStatus } from 'expo-permissions/src/Permissions.types';
+import { ExpoPushToken } from 'expo-notifications/build/Tokens.types';
+import { Nullable } from '../../models/nullable';
 
 export function* watchProductsSaga() {
     yield takeEvery(ProductsActionType.LOAD_PRODUCTS, loadProductsSaga);
@@ -27,6 +32,7 @@ function* loadProductsSaga(action: LoadProductsAction) {
             return new Product(
                 id,
                 productData.ownerId,
+                productData.ownerPushToken,
                 productData.title,
                 productData.imageUrl,
                 productData.description,
@@ -43,17 +49,25 @@ function* loadProductsSaga(action: LoadProductsAction) {
 function* createProductSaga(action: CreateProductAction) {
     yield put(ProductsActions.createProductStart());
     try {
+        let pushToken: Nullable<ExpoPushToken> = null;
+        const permissionResponse: PermissionResponse = yield ExpoPermissions.askAsync(ExpoPermissions.NOTIFICATIONS);
+        if (permissionResponse.status === PermissionStatus.GRANTED) {
+            pushToken = yield ExpoNotifications.getExpoPushTokenAsync();
+        }
+
         const response: FirebaseNameResponse = yield ProductsService.createProduct(
             action.title,
             action.imageUrl,
             action.description,
             +action.price,
-            action.user
+            action.user,
+            pushToken?.data
         );
         yield put(ProductsActions.createProductSuccess(
             new Product(
                 response.name,
                 action.user?.id,
+                pushToken?.data,
                 action.title,
                 action.imageUrl,
                 action.description,

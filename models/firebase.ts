@@ -6,6 +6,7 @@ export interface FirebaseNameResponse {
 
 export interface FirebaseProductData {
     ownerId: string,
+    ownerPushToken: string,
     title: string,
     imageUrl: string,
     description: string,
