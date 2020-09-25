@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { Button, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
-import { RouteProp } from '@react-navigation/native';
+import { DrawerActions, RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { COLORS } from '../../../constants/colors';
@@ -19,7 +19,6 @@ import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import ScreenLoader from '../../../components/UI/ScreenLoader/ScreenLoader';
 import { HttpState } from '../../../models/http-state';
 import CartHeaderButton from '../../../components/UI/CartHeaderButton/CartHeaderButton';
-import { DrawerNavigationProps } from '../../../models/drawer-navigation-props';
 
 type ProductsOverviewScreenStackNavigationProp = StackNavigationProp<ProductsNavigatorParams, 'ProductsOverview'>;
 type ProductsOverviewScreenRouteProp = RouteProp<ProductsNavigatorParams, 'ProductsOverview'>;
@@ -91,14 +90,14 @@ const ProductsOverviewScreen = (props: ProductsOverviewScreenProps) => {
                             onReload={ onRefresh }/>;
     } else {
         return (
-            <FlatList data={ productList } 
-                      renderItem={ renderProduct } 
+            <FlatList data={ productList }
+                      renderItem={ renderProduct }
                       refreshControl={ refreshControl }/>
         );
     }
 };
 
-export const productsOverviewScreenNavigationOptions = (props: DrawerNavigationProps) => {
+export const productsOverviewScreenNavigationOptions = (props: ProductsOverviewScreenProps) => {
     return {
         headerTitle: 'All Products',
         headerLeft: () => {
@@ -106,7 +105,7 @@ export const productsOverviewScreenNavigationOptions = (props: DrawerNavigationP
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
-                          onPress={ () => props.navigation.toggleDrawer() }/>
+                          onPress={ () => props.navigation.dispatch(DrawerActions.toggleDrawer()) }/>
                 </HeaderButtons>
             );
         },

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
-import { RouteProp } from '@react-navigation/native';
+import { DrawerActions, RouteProp } from '@react-navigation/native';
 import { FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +18,6 @@ import * as OrdersActions from '../../../store/orders/orders.actions';
 import { RootState } from '../../../store/store';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import { Product } from '../../../models/product';
-import { DrawerNavigationProps } from '../../../models/drawer-navigation-props';
 
 type OrdersScreenStackNavigationProp = StackNavigationProp<OrdersNavigatorParams, 'Orders'>;
 type OrdersScreenRouteProp = RouteProp<OrdersNavigatorParams, 'Orders'>;
@@ -83,7 +82,7 @@ const OrdersScreen = (props: OrdersScreenProps) => {
     }
 };
 
-export const ordersScreenNavigationOptions  = (props: DrawerNavigationProps) => {
+export const ordersScreenNavigationOptions  = (props: OrdersScreenProps) => {
     return {
         headerTitle: 'Your Orders',
         headerLeft: () => {
@@ -91,7 +90,7 @@ export const ordersScreenNavigationOptions  = (props: DrawerNavigationProps) => 
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
-                          onPress={ () => props.navigation.toggleDrawer() }/>
+                          onPress={ () => props.navigation.dispatch(DrawerActions.toggleDrawer()) }/>
                 </HeaderButtons>
             );
         }

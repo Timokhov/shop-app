@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, View, StyleSheet } from 'react-native';
+import { DrawerActions } from '@react-navigation/native';
 import { DrawerContentComponentProps } from '@react-navigation/drawer/src/types';
 import { DrawerItemList } from '@react-navigation/drawer';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,6 +14,7 @@ const CustomDrawerNavigationItems = (props: DrawerContentComponentProps) => {
     const dispatch: Dispatch<Action> = useDispatch();
 
     const onLogout = () => {
+        props.navigation.dispatch(DrawerActions.closeDrawer());
         dispatch(AuthActions.logout());
     };
 

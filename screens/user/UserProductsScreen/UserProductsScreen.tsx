@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { Alert, Button, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
-import { RouteProp } from '@react-navigation/native';
+import { DrawerActions, RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
@@ -17,7 +17,6 @@ import { AdminStackParams } from '../../../navigation/AppNavigator';
 import { RootState } from '../../../store/store';
 import ScreenError from '../../../components/UI/ScreenError/ScreenError';
 import * as ProductsActions from '../../../store/products/products.actions';
-import { DrawerNavigationProps } from '../../../models/drawer-navigation-props';
 
 type UserProductsScreenStackNavigationProp = StackNavigationProp<AdminStackParams, 'UserProducts'>;
 type UserProductsScreenRouteProp = RouteProp<AdminStackParams, 'UserProducts'>;
@@ -104,7 +103,7 @@ const UserProductsScreen = (props: UserProductsScreenStackProps) => {
     }
 };
 
-export const userProductsScreenNavigationOptions = (props: DrawerNavigationProps) => {
+export const userProductsScreenNavigationOptions = (props: UserProductsScreenStackProps) => {
     return {
         headerTitle: 'Your Products',
         headerLeft: () => {
@@ -112,7 +111,7 @@ export const userProductsScreenNavigationOptions = (props: DrawerNavigationProps
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Menu'
                           iconName='ios-menu'
-                          onPress={ () => props.navigation.toggleDrawer() }/>
+                          onPress={ () => props.navigation.dispatch(DrawerActions.toggleDrawer()) }/>
                 </HeaderButtons>
             );
         },
