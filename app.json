@@ -22,6 +22,7 @@
     "android": {
       "package": "com.timokhov.ilia.apps.my_shop",
       "versionCode": 1,
+      "useNextNotificationsApi": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
